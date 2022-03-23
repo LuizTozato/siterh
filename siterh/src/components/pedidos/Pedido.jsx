@@ -3,14 +3,16 @@ import './Pedido.css'
 import axios from 'axios' //biblioteca http
 import Main from "../template/Main"
 
-const baseUrl = '/pedido'
+const baseUrl = '/pedidos'
 
 const initialState = {
-    pedido: { id: '', emailDoSolicitante:'', ano: '', mes:'', diretoria:'', regional:'',
-        local:'', cargo:'', codigo:'', tipo:'', nome: '', primeiroDia: '', 
-        ultimoDia:'', dias:'', decimoTerceiro:'', abono:''},
+    pedido: {
+        id: '', id_servidor: '', emailDoSolicitante: '', ano: '', mes: '', diretoria: '', regional: '',
+        local: '', cargo: '', codigo: '', tipo: '', nome: '', primeiroDia: '',
+        ultimoDia: '', dias: '', decimoTerceiro: '', abono: ''
+    },
     listPedidos: [],
-    content: ''
+    servidores: null
 }
 
 export default class Pedido extends Component {
@@ -24,20 +26,17 @@ export default class Pedido extends Component {
     }
 
     // FUNCTIONS ============
-    /*
+
     componentDidMount() {
-        this.fetchContent().then(response => {
-            const {id, message, timestamp} = response.data
-            this.setState({content: `${message} - ${timestamp}`})
-            this.setState({pedido: {id: id}})
-        })
+        this.fetchServidores()
     }
 
-    fetchContent() {
-        const randomID = Math.floor(Math.random() * 100)
-        return axios.get(baseUrl +"/"+ randomID)
+    fetchServidores() {
+        axios.get(baseUrl + "/servidores").then(response => {
+            const servidores = response.data
+            this.setState({servidores})
+        })
     }
-    */
 
     clear() {
         this.setState({...initialState})
@@ -47,7 +46,7 @@ export default class Pedido extends Component {
         e.preventDefault()
 
         const pedido = this.state.pedido
-        
+
         const method = pedido.id ? 'put' : 'post'
         const url = pedido.id ? `${baseUrl}/${pedido.id}` : baseUrl
 
@@ -65,27 +64,27 @@ export default class Pedido extends Component {
         this.setState({pedido})
     }
 
-    montarPedido(){
+    montarPedido() {
         /*
         this.setState({
             id : '',
             emailDoSolicitante : '', //OK
             ano : '',
             mes : '',
-            diretoria : '', 
+            diretoria : '',
             regional : '',
-            local : '', 
+            local : '',
             cargo : '',
             codigo : '',
             tipo : '',
             nome : '',
-            primeiroDia : '', 
+            primeiroDia : '',
             ultimoDia : '',
             dias : '',
             decimoTerceiro : '',
             abono : '',
         })
-        */        
+        */
     }
 
     // JSX ================
@@ -93,30 +92,28 @@ export default class Pedido extends Component {
         //JSX que renderizará o formulário
         return (
             <form className="formulario">
-                <h4>{this.state.content}</h4>
-                <hr/><br/>
-                <br/>
                 <label>E-mail do Solicitante</label>
-                <input type="email" 
-                    name="emailDoSolicitante"
-                    value={this.state.pedido.emailDoSolicitante}
-                    onChange={e=>this.updateField(e)}
-                    placeholder="Digite o e-mail">
+                <input type="email"
+                       name="emailDoSolicitante"
+                       value={this.state.pedido.emailDoSolicitante}
+                       onChange={e => this.updateField(e)}
+                       placeholder="Digite o e-mail">
                 </input>
                 <br/>
                 <label>Selecione o nome</label>
-                <select name="nome"
-                    value={this.state.pedido.nome}
-                    onChange={e=>this.updateField(e)}>
-                    <option value="Luiz Felipe Neves Tozato">Luiz Felipe Neves Tozato</option>
-                    <option value="Samanta Cássia Vertuan">Samanta Cássia Vertuan</option>
-                    <option value="Franciele Baptista">Franciele Baptista</option>
+                <select name="id_servidor"
+                        value={this.state.pedido.id_servidor}
+                        onChange={e => this.updateField(e)}>
+                    <option key="0" value="">{this.state.servidores ? "Selecione..." : "Carregando..."}</option>
+                    {
+                        this.state.servidores?.map(({id, nome}) => <option key={id} value={id}>{nome}</option>)
+                    }
                 </select>
                 <br/>
                 <label>Tipo de solicitação</label>
                 <select name="tipo"
-                    value={this.state.pedido.tipo}
-                    onChange={e=>this.updateField(e)}>
+                        value={this.state.pedido.tipo}
+                        onChange={e => this.updateField(e)}>
                     <option value="f">Férias Regulamentar</option>
                     <option value="fp">Férias Prêmio</option>
                     <option value="fc">Férias Crédito</option>
@@ -125,39 +122,41 @@ export default class Pedido extends Component {
                 <br/>
                 <label>Data Inicial</label>
                 <input type="date"
-                    name="primeiroDia"
-                    value={this.state.pedido.primeiroDia}
-                    onChange={e=>this.updateField(e)}>
+                       name="primeiroDia"
+                       value={this.state.pedido.primeiroDia}
+                       onChange={e => this.updateField(e)}>
                 </input>
                 <br/>
                 <label>Abono Pecuniário</label>
                 <div className="radio"
-                    name="abono"
-                    value={this.state.pedido.abono}
-                    onChange={e=>this.updateField(e)}>
+                     name="abono"
+                     value={this.state.pedido.abono}
+                     onChange={e => this.updateField(e)}>
                     <input type="radio" name="abono" value="Sim"/>Sim
                     <input type="radio" name="abono" value="Não"/>Não
                 </div>
                 <br/>
                 <label>Décimo Terceiro</label>
                 <div className="radio"
-                    name="decimoTerceiro"
-                    value={this.state.pedido.decimoTerceiro}
-                    onChange={e=>this.updateField(e)}>                    
+                     name="decimoTerceiro"
+                     value={this.state.pedido.decimoTerceiro}
+                     onChange={e => this.updateField(e)}>
                     <input type="radio" name="decimoTerceiro" value="Sim"/>Sim
                     <input type="radio" name="decimoTerceiro" value="Não"/>Não
                 </div>
                 <br/>
                 <label>Dias Gozo</label>
                 <div className="radio"
-                    name="dias"
-                    value={this.state.pedido.dias}
-                    onChange={e=>this.updateField(e)}>                     
+                     name="dias"
+                     value={this.state.pedido.dias}
+                     onChange={e => this.updateField(e)}>
                     <input type="radio" name="diasGozo" value="10"/>10
                     <input type="radio" name="diasGozo" value="20"/>20
                     <input type="radio" name="diasGozo" value="30"/>30
                 </div>
-                <br/><hr/><br/>
+                <br/>
+                <hr/>
+                <br/>
                 <div className="botoes">
                     <button
                         onClick={e => this.salvar(e)}>
