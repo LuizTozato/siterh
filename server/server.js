@@ -10,6 +10,7 @@ const app = express()
 
 // allow cross-origin requests
 app.use(cors())
+app.use(express.json())
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
