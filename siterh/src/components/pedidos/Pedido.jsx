@@ -34,6 +34,7 @@ export default class Pedido extends Component {
     fetchServidores() {
         axios.get(baseUrl + "/servidores").then(response => {
             const servidores = response.data
+            console.log(servidores)
             this.setState({servidores})
         })
     }
@@ -48,43 +49,23 @@ export default class Pedido extends Component {
         const pedido = this.state.pedido
 
         const method = pedido.id ? 'put' : 'post'
-        const url = pedido.id ? `${baseUrl}/${pedido.id}` : baseUrl
+        const url = pedido.id ? `${baseUrl}/pedido/${pedido.id}` : `${baseUrl}/pedido`
 
         console.log("pedido: ")
         console.log(pedido)
         console.log("metodo: " + method)
         console.log("url: " + url)
 
-        //axios[method](url, pedido)
+        axios[method](url, pedido ).then(response => {
+            console.log(response)
+        })
+        
     }
 
     updateField(event) {
         const pedido = {...this.state.pedido} //clonando. Depois vou upá-lo
         pedido[event.target.name] = event.target.value
         this.setState({pedido})
-    }
-
-    montarPedido() {
-        /*
-        this.setState({
-            id : '',
-            emailDoSolicitante : '', //OK
-            ano : '',
-            mes : '',
-            diretoria : '',
-            regional : '',
-            local : '',
-            cargo : '',
-            codigo : '',
-            tipo : '',
-            nome : '',
-            primeiroDia : '',
-            ultimoDia : '',
-            dias : '',
-            decimoTerceiro : '',
-            abono : '',
-        })
-        */
     }
 
     // JSX ================
@@ -114,6 +95,7 @@ export default class Pedido extends Component {
                 <select name="tipo"
                         value={this.state.pedido.tipo}
                         onChange={e => this.updateField(e)}>
+                    <option key="0" value="">Selecione...</option>
                     <option value="f">Férias Regulamentar</option>
                     <option value="fp">Férias Prêmio</option>
                     <option value="fc">Férias Crédito</option>

@@ -7,6 +7,5 @@ aside .logo{
 }
 
 aside .logo img {
-    padding: 0px 15px;
-    height: 100%;
+    width: 100%;
 }

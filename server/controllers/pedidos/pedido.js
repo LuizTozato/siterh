@@ -7,8 +7,12 @@ export default {
 
     //Incluir novo
     addPedido(req, res) {
-        console.log("Enviado por post: " + JSON.stringify(req.params))
-        res.send("🔥")
+        console.log("Enviado por post ===========")
+        console.log("Parâmetros:")
+        console.log(req.params)
+        console.log("Body:")
+        console.log(req.body)
+        res.send("🔥🔥")
     },
 
     //Alterar pedido existente
