@@ -10,10 +10,11 @@ const db_path = __dirname + '/' + db_name
 
 const database = new sqlite3.Database(db_path, err => {
     if (err) {
-        return console.error(err.message);
+        return console.error(err.message)
     }
-    console.log(`Connected to ${db_name} SQlite database.`);
+    console.log(`Connected to ${db_name} SQlite database.`)
 });
 
+database.run('PRAGMA foreign_keys = ON')
 
 export default database
