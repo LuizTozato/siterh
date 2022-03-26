@@ -1,18 +1,21 @@
-form.formulario * {
+.form .row > label:first-child {
     display: block;
     margin-bottom: 10px;
 }
 
-input[type=radio] {
-    display: inline;
+.form .row {
+    margin-bottom: 20px;
+}
+
+.radio_group label {
     margin: 10px;
 }
 
-form div.botoes {
+form div.buttons {
     display: flex;
 }
 
-form div.botoes button {
+form div.buttons button {
     margin-top: 10px;
     margin-right: 10px;
     padding: 10px;

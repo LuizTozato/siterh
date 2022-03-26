@@ -1,3 +1,5 @@
+import db from "../../database/database.js"
+
 export default {
 
     getPedido(req, res) {
@@ -12,7 +14,10 @@ export default {
         console.log(req.params)
         console.log("Body:")
         console.log(req.body)
-        res.send("🔥🔥")
+        if (setPedido(req.body))
+            res.send("✅")
+        else
+            res.status(400).send("🔥")
     },
 
     //Alterar pedido existente
@@ -29,4 +34,48 @@ export default {
         ]
         res.send(servidores)
     }
+}
+
+/**
+ * @param {string} date
+ * @param {int} days
+ * @returns {string} yyyy-mm-dd
+ */
+function addDays(date, days) {
+    let final_date = new Date(date)
+    final_date.setDate(final_date.getDate() + days)
+    return final_date.toISOString().split('T')[0]
+}
+
+function setPedido(data) {
+
+    db.run(`INSERT INTO tb_pedido(id_servidor,
+                                  email_solicitante,
+                                  tipo,
+                                  data_inicial,
+                                  data_final,
+                                  decimo_terceiro,
+                                  abono)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+            data.id_servidor,
+            data.email_solicitante,
+            data.tipo,
+            data.data_inicial,
+            addDays(data.data_inicial, data.dias_gozo),
+            data.decimo_terceiro,
+            data.abono
+        ],
+        function (err) {
+            if (err) {
+                return console.log(err.message);
+            }
+            // get the last insert id
+            console.log(`A row has been inserted with rowid ${this.lastID}`);
+        }
+    )
+
+    db.close()
+
+    return true
 }
