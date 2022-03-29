@@ -75,7 +75,5 @@ function setPedido(data) {
         }
     )
 
-    db.close()
-
     return true
 }
