@@ -53,18 +53,67 @@ export default class Pedido extends Component {
 
         const pedido = this.state.pedido
 
-        const method = pedido.id ? 'put' : 'post'
-        const url = pedido.id ? `${baseUrl}/pedido/${pedido.id}` : `${baseUrl}/pedido`
+        const validacao = this.sanearInput()
 
-        console.log("pedido: ")
-        console.log(pedido)
-        console.log("metodo: " + method)
-        console.log("url: " + url)
+        if(validacao.boolean) {
 
-        axios[method](url, pedido).then(response => {
-            console.log(response)
-        })
+            const method = pedido.id ? 'put' : 'post'
+            const url = pedido.id ? `${baseUrl}/pedido/${pedido.id}` : `${baseUrl}/pedido`
+    
+            console.log("pedido: ")
+            console.log(pedido)
+            console.log("metodo: " + method)
+            console.log("url: " + url)
+    
+            axios[method](url, pedido).then(response => {
+                console.log(response)
+                console.log(response.status)
+                this.setTextoAviso("Pedido enviado com sucesso!", validacao.cor)
+            })
+        } else {
+            this.setTextoAviso(validacao.texto, validacao.cor)
+        }
 
+    }
+
+    sanearInput() {
+        let boolean = true
+        let texto = ''
+        let cor = "red"
+
+        if(this.state.pedido.id_servidor === ''){
+            boolean = false
+            texto = "Selecione o nome do servidor!"
+        }
+        else if(this.state.pedido.email_solicitante === ''){
+            boolean = false
+            texto = "Digite o seu endereço de e-mail!"
+        }
+        else if(this.state.pedido.tipo === ''){
+            boolean = false
+            texto = "Selecione o tipo de solicitação!"
+        }
+        else if(this.state.pedido.data_inicial === ''){
+            boolean = false
+            texto = "Selecione a data inicial de férias!"
+        }
+        else if(this.state.pedido.dias_gozo === 0){
+            boolean = false
+            texto = "Selecione o número de dias de férias que irá se ausentar!"
+        }
+        else {
+            cor = "green"
+        }
+
+        console.log("Boolean saneamento: " + boolean)
+        console.log("Texto saneamento: " + texto)
+        return {boolean, texto, cor}
+    }
+
+    setTextoAviso(texto, color = "black") {
+        const textoHtml = document.getElementById("textoResposta")
+        textoHtml.innerHTML = texto
+        textoHtml.style.color = color
     }
 
     setPedido(state) {
@@ -78,11 +127,12 @@ export default class Pedido extends Component {
             <form className="form">
                 <div className="row">
                     <label>E-mail do Solicitante</label>
-                    <input type="email"
-                           name="email_solicitante"
-                           value={this.state.pedido.email_solicitante}
-                           onChange={e => this.setPedido({email_solicitante: e.target.value})}
-                           placeholder="Digite o e-mail">
+                    <input 
+                        type="email"
+                        name="email_solicitante"
+                        value={this.state.pedido.email_solicitante}
+                        onChange={e => this.setPedido({email_solicitante: e.target.value})}
+                        placeholder="Digite o e-mail">
                     </input>
                 </div>
                 <div className="row">
@@ -193,6 +243,8 @@ export default class Pedido extends Component {
                         Limpar
                     </button>
                 </div>
+
+                <h4 id="textoResposta"></h4>
             </form>
         )
     }
