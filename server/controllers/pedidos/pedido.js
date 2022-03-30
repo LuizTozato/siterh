@@ -29,8 +29,8 @@ export default {
     getServidores(req, res) {
         const servidores = [
             {id: 12345, nome: 'Luiz Felipe Neves Tozato'},
-            {id: 12346, nome: 'Samanta Cássia Vertuan'},
-            {id: 12347, nome: 'Franciele Baptista'}
+            {id: 23456, nome: 'Samanta Cássia Vertuan'},
+            {id: 34567, nome: 'Franciele Baptista'}
         ]
         res.send(servidores)
     }
