@@ -81,13 +81,13 @@ export default class Pedido extends Component {
         let texto = ''
         let cor = "red"
 
-        if(this.state.pedido.id_servidor === ''){
-            boolean = false
-            texto = "Selecione o nome do servidor!"
-        }
-        else if(this.state.pedido.email_solicitante === ''){
+        if(this.state.pedido.email_solicitante === ''){
             boolean = false
             texto = "Digite o seu endereço de e-mail!"
+        }
+        else if(this.state.pedido.id_servidor === ''){
+            boolean = false
+            texto = "Selecione o nome do servidor!"
         }
         else if(this.state.pedido.tipo === ''){
             boolean = false
