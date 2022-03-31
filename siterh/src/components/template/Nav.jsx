@@ -11,6 +11,9 @@ export default () => (
             <Link to='/pedidos'>
                 Agendar
             </Link>
+            <Link to='/listagem'>
+                Listar
+            </Link>
         </nav>
     </aside>
 )

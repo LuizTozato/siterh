@@ -251,7 +251,7 @@ export default class Pedido extends Component {
 
     render() {
         return (
-            <Main title="Detalhes do Pedido!">
+            <Main title="Agendar pedido">
                 {this.renderForm()}
             </Main>
         )
