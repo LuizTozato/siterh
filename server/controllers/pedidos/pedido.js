@@ -3,8 +3,26 @@ import db from "../../database/database.js"
 export default {
 
     getPedido(req, res) {
-        console.log("Enviado por get: " + JSON.stringify(req.params))
-        res.send("🔥")
+        
+        let table = db.run(`SELECT id_servidor,
+                       email_solicitante,
+                       tipo,
+                       data_inicial,
+                       data_final,
+                       decimo_terceiro,
+                       abono
+                FROM tb_pedido
+                WHERE id_servidor = ${req.id}`,
+            function (err) {
+                if (err) {
+                    return console.log(err.message);
+                }
+                // get the last insert id
+                console.log(`The order request has been read.`);
+            }
+        )
+
+        res.send(table)
     },
 
     //Incluir novo
