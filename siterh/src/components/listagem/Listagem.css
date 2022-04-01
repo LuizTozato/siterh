@@ -37,3 +37,7 @@
     font-weight: bold;
     color: #009879;
 }
+
+.tabelaPedidos tbody tr td button {
+    margin: 5px;
+}

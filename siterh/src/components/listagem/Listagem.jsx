@@ -37,6 +37,7 @@ export default class Listagem extends Component {
                         <th>data_final</th>
                         <th>abono</th>
                         <th>decimo_terceiro</th>
+                        <th>ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,6 +59,10 @@ export default class Listagem extends Component {
                     <td>{pedido.data_final}</td>
                     <td>{pedido.abono}</td>
                     <td>{pedido.decimo_terceiro}</td>
+                    <td>
+                        <button>Editar</button>  
+                        <button>Excluir</button>
+                    </td>
                 </tr>
             )
         })
