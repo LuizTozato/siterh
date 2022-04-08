@@ -34,7 +34,6 @@
 }
 
 .tabelaPedidos tbody tr:hover {
-    font-weight: bold;
     color: #009879;
 }
 

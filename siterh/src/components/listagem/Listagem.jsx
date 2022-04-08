@@ -24,6 +24,17 @@ export default class Listagem extends Component {
         
     }
 
+    editarClickEvent(event){
+        let id_pedido = event.target.parentNode.parentNode.children[0].innerHTML
+        console.log(id_pedido) 
+        console.log(typeof(id_pedido)) //sempre armazenado como string. precisa parsear
+ 
+        localStorage.setItem("id_pedido", id_pedido)
+        
+        window.location.href = "/atualizar"
+
+    }
+
     renderTable() {
         return (
             <table className="tabelaPedidos">
@@ -50,7 +61,7 @@ export default class Listagem extends Component {
     renderRows() {
         return this.state.list.map( pedido => {
             return (
-                <tr key={pedido.id_pedido}>
+                <tr key={pedido.id_pedido} id="id_servidor">
                     <td>{pedido.id_pedido}</td>
                     <td>{pedido.id_servidor}</td>
                     <td>{pedido.email_solicitante}</td>
@@ -60,8 +71,8 @@ export default class Listagem extends Component {
                     <td>{pedido.abono}</td>
                     <td>{pedido.decimo_terceiro}</td>
                     <td>
-                        <button>Editar</button>  
-                        <button>Excluir</button>
+                        <button onClick={e => this.editarClickEvent(e)}>Editar</button>
+                        <button >Excluir</button>
                     </td>
                 </tr>
             )

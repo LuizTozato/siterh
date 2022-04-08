@@ -1,25 +1,25 @@
 import React, {Component} from "react"
-import './Pedido.css'
-import axios from 'axios' //biblioteca http
+import './Atualizar.css'
+import axios from "axios"
 import Main from "../template/Main"
-
-const baseUrl = '/pedidos'
 
 const initialState = {
     pedido: {
-        id: '',
+        id_pedido: '',
         id_servidor: '',
         email_solicitante: '',
         tipo: '',
         data_inicial: '',
+        data_final: '',
         dias_gozo: 0,
-        decimo_terceiro: false,
-        abono: false
-    },
-    servidores: null
+        abono: false,
+        decimo_terceiro: false
+    }
 }
 
-export default class Pedido extends Component {
+let id_pedido
+
+export default class Atualizar extends Component {
 
     constructor(props) {
         super(props);
@@ -29,45 +29,45 @@ export default class Pedido extends Component {
         }
     }
 
-    // FUNCTIONS ============
+    componentDidMount(){
+        id_pedido = localStorage.getItem("id_pedido")
 
-    componentDidMount() {
-        this.fetchServidores()
-    }
+        axios.get('/pedidos/pedido/' + id_pedido).then(response => {
+            this.setState({pedido: { ...response.data}})
+            console.log(this.state)
 
-    fetchServidores() {
-        axios.get(baseUrl + "/servidores").then(response => {
-            const servidores = response.data
-            console.log(servidores)
-            this.setState({servidores})
+            const diasGozo = this.getDaysBetween(this.state.pedido.data_inicial, this.state.pedido.data_final)
+            this.setPedido({dias_gozo: diasGozo})
         })
     }
 
-    clear() {
-        this.setState({...initialState})
+    getDaysBetween(startDate, finalDate) {
+        let start_date = new Date(startDate)
+        let final_date = new Date(finalDate)
+        const days = (final_date.getTime() - start_date.getTime()) / (86400000)
+        return days
+    }
+
+    setPedido(state) {
+        this.setState({pedido: {...this.state.pedido, ...state}})
+    }
+
+    cancelar(e){
+        window.location.href = "/listagem"
     }
 
     salvar(e) {
         e.preventDefault()
 
         const pedido = this.state.pedido
-
         const validacao = this.sanearInput()
 
         if(validacao.boolean) {
 
-            const method = pedido.id ? 'put' : 'post'
-            const url = pedido.id ? `${baseUrl}/pedido/${pedido.id}` : `${baseUrl}/pedido`
-    
-            //console.log("pedido: ")
-            //console.log(pedido)
-            //console.log("metodo: " + method)
-            //console.log("url: " + url)
-    
-            axios[method](url, pedido).then(response => {
-                //console.log(response)
-                //console.log(response.status)
-                this.setTextoAviso("Pedido enviado com sucesso!", validacao.cor)
+            const url = "/pedidos/pedido/" + id_pedido
+
+            axios.put(url, pedido).then(response => {
+                this.setTextoAviso("Pedido atualizado com sucesso!", validacao.cor)
             })
         } else {
             this.setTextoAviso(validacao.texto, validacao.cor)
@@ -83,10 +83,6 @@ export default class Pedido extends Component {
         if(this.state.pedido.email_solicitante === ''){
             boolean = false
             texto = "Digite o seu endereço de e-mail!"
-        }
-        else if(this.state.pedido.id_servidor === ''){
-            boolean = false
-            texto = "Selecione o nome do servidor!"
         }
         else if(this.state.pedido.tipo === ''){
             boolean = false
@@ -115,11 +111,7 @@ export default class Pedido extends Component {
         textoHtml.style.color = color
     }
 
-    setPedido(state) {
-        this.setState({pedido: {...this.state.pedido, ...state}})
-    }
-
-    // JSX ================
+    //== JSX ==
     renderForm() {
         //JSX que renderizará o formulário
         return (
@@ -135,15 +127,7 @@ export default class Pedido extends Component {
                     </input>
                 </div>
                 <div className="row">
-                    <label>Selecione o nome</label>
-                    <select name="id_servidor"
-                            value={this.state.pedido.id_servidor}
-                            onChange={e => this.setPedido({id_servidor: e.target.value})}>
-                        <option key="0" value="">{this.state.servidores ? "Selecione..." : "Carregando..."}</option>
-                        {
-                            this.state.servidores?.map(({id, nome}) => <option key={id} value={id}>{nome}</option>)
-                        }
-                    </select>
+                    <label>Servidor: {this.state.pedido.id_servidor}</label>
                 </div>
                 <div className="row">
                     <label>Tipo de solicitação</label>
@@ -238,8 +222,8 @@ export default class Pedido extends Component {
                         Salvar
                     </button>
                     <button
-                        onClick={e => this.clear(e)}>
-                        Limpar
+                        onClick={e => this.cancelar(e)}>
+                        Cancelar
                     </button>
                 </div>
 
@@ -250,7 +234,7 @@ export default class Pedido extends Component {
 
     render() {
         return (
-            <Main title="Agendar pedido">
+            <Main title="Edição dos Pedidos">
                 {this.renderForm()}
             </Main>
         )

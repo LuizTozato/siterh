@@ -3,35 +3,22 @@ import db from "../../database/database.js"
 export default {
 
     getPedido(req, res) {
-        
-        let table = db.run(`SELECT id_servidor,
-                       email_solicitante,
-                       tipo,
-                       data_inicial,
-                       data_final,
-                       decimo_terceiro,
-                       abono
+
+        db.get(`SELECT *
                 FROM tb_pedido
-                WHERE id_servidor = ${req.id}`,
-            function (err) {
+                WHERE id_pedido = ${req.params.id}`,
+            function (err, result) {
                 if (err) {
-                    return console.log(err.message);
+                    return console.log(err.message)
+                } else {
+                    res.send(result)
                 }
-                // get the last insert id
-                console.log(`The order request has been read.`);
             }
         )
-
-        res.send(table)
     },
 
     //Incluir novo
     addPedido(req, res) {
-        console.log("Enviado por post ===========")
-        console.log("Parâmetros:")
-        console.log(req.params)
-        console.log("Body:")
-        console.log(req.body)
         if (setPedido(req.body))
             res.send("✅")
         else
@@ -40,8 +27,10 @@ export default {
 
     //Alterar pedido existente
     updatePedido(req, res) {
-        console.log("Enviado por put: " + JSON.stringify(req.params))
-        res.send("🔥")
+        if (updatePedido(req.body))
+            res.send("✅")
+        else
+            res.status(400).send("🔥")
     },
 
     getServidores(req, res) {
@@ -90,6 +79,36 @@ function setPedido(data) {
             }
             // get the last insert id
             console.log(`A row has been inserted with rowid ${this.lastID}`);
+        }
+    )
+
+    return true
+}
+
+function updatePedido(data) {
+
+    db.run(`UPDATE tb_pedido SET 
+                                  email_solicitante = ?,
+                                  tipo = ?,
+                                  data_inicial = ?,
+                                  data_final = ?,
+                                  decimo_terceiro = ?,
+                                  abono = ?
+            WHERE id_pedido = ?`,
+        [
+            data.email_solicitante,
+            data.tipo,
+            data.data_inicial,
+            addDays(data.data_inicial, data.dias_gozo),
+            data.decimo_terceiro,
+            data.abono,
+            data.id_pedido
+        ],
+        function (err) {
+            if (err) {
+                return console.log(err.message);
+            }
+            console.log(`A row has been updated with rowid ${data.id_pedido}`);
         }
     )
 
