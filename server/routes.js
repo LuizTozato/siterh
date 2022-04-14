@@ -8,6 +8,7 @@ function setup(app) {
     app.post('/pedidos/pedido', Pedido.addPedido)
     app.put('/pedidos/pedido/:id', Pedido.updatePedido)
     app.get('/pedidos/servidores', Pedido.getServidores)
+    app.delete('/pedidos/pedido/:id', Pedido.deletePedido)
 }
 
 export default { setup }

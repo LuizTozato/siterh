@@ -6,7 +6,10 @@ export default {
 
         db.get(`SELECT *
                 FROM tb_pedido
-                WHERE id_pedido = ${req.params.id}`,
+                WHERE id_pedido = ?`,
+            [
+                req.params.id
+            ],
             function (err, result) {
                 if (err) {
                     return console.log(err.message)
@@ -40,6 +43,26 @@ export default {
             {id: 34567, nome: 'Franciele Baptista'}
         ]
         res.send(servidores)
+    },
+
+    deletePedido(req, res) {
+
+        db.run(`DELETE FROM tb_pedido
+                    WHERE id_pedido = ?`,
+            [
+                req.params.id
+            ],
+            function (err) {
+                if (err) {
+                    return console.log(err.message);
+                } 
+                
+                res.send("✅")
+                console.log(`A row has been deleted with rowid: ${req.params.id}`);
+            }
+        )
+
+        return true
     }
 }
 

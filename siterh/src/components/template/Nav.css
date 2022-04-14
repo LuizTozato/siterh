@@ -22,8 +22,3 @@ nav a {
 .menu .link-always-on:hover {
     background: linear-gradient(135deg, #07a7e3, #32dac3 100%);
 }
-
-.menu .indirect-link {
-    text-decoration: none;
-    color: gray;
-}

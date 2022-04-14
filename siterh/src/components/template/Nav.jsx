@@ -14,9 +14,6 @@ export default () => (
             <Link to='/listagem' className="link-always-on">
                 Listar
             </Link>
-            <Link to='/atualizar' className="indirect-link" onClick={ (event) => event.preventDefault() }>
-                Atualizar
-            </Link>
         </nav>
     </aside>
 )

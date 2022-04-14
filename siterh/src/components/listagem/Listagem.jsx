@@ -1,10 +1,13 @@
-import React, {Component} from "react"
+import React, {Component, useState} from "react"
 import './Listagem.css'
 import axios from "axios"
 import Main from "../template/Main"
+import dialog from "../template/Display"
 
 const initialState = {
-    list: []
+    list: [],
+    confirmando: false,
+    id_pedido: 0
 }
 
 export default class Listagem extends Component {
@@ -15,6 +18,8 @@ export default class Listagem extends Component {
         this.state = {
             ...initialState
         }
+
+        this.confirmaExclusao = this.confirmaExclusao.bind(this)
     }
 
     componentDidMount() {
@@ -33,6 +38,21 @@ export default class Listagem extends Component {
         
         window.location.href = "/atualizar"
 
+    }
+
+    deleteClickEvent(event) {
+        this.setState({confirmando: true})
+        this.setState({id_pedido: event.target.parentNode.parentNode.children[0].innerHTML})
+    }
+
+    confirmaExclusao(escolha) {
+        if(escolha){
+            axios.delete('/pedidos/pedido/' + this.state.id_pedido).then(response => {
+                window.location.reload()
+            })
+        }
+
+        this.setState({confirmando: false})
     }
 
     renderTable() {
@@ -72,7 +92,7 @@ export default class Listagem extends Component {
                     <td>{pedido.decimo_terceiro}</td>
                     <td>
                         <button onClick={e => this.editarClickEvent(e)}>Editar</button>
-                        <button >Excluir</button>
+                        <button onClick={e => this.deleteClickEvent(e)}>Excluir</button>
                     </td>
                 </tr>
             )
@@ -83,6 +103,7 @@ export default class Listagem extends Component {
         return (
             <Main title="Listagem dos Pedidos">
                 {this.renderTable()}
+                {this.state.confirmando && dialog("Está certo da exclusão?",this.confirmaExclusao)}
             </Main>
         )
     }
