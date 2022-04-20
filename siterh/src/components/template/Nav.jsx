@@ -8,11 +8,11 @@ export default () => (
             <Link to='/' className="link-always-on">
                 Início
             </Link>
-            <Link to='/pedidos' className="link-always-on">
-                Agendar
-            </Link>
             <Link to='/listagem' className="link-always-on">
                 Listar
+            </Link>
+            <Link to='/pedidos' className="link-always-on">
+                Agendar
             </Link>
         </nav>
     </aside>

@@ -1,9 +1,9 @@
-.form .row > label:first-child {
+.form-pedido .row > label:first-child {
     display: block;
     margin-bottom: 10px;
 }
 
-.form .row {
+.form-pedido .row {
     margin-bottom: 20px;
 }
 
@@ -11,11 +11,11 @@
     margin: 10px;
 }
 
-form div.buttons {
+.form-pedido div.buttons {
     display: flex;
 }
 
-form div.buttons button {
+.form-pedido div.buttons button {
     margin-top: 10px;
     margin-right: 10px;
     padding: 10px;
