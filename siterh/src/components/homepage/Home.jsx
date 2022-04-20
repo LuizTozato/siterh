@@ -19,6 +19,8 @@ export default class Home extends Component {
         }
     }
 
+
+    //===== JSX =================
     renderForm() {
         return(
             <form className="form-home">

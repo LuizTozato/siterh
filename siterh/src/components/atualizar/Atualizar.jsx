@@ -115,7 +115,7 @@ export default class Atualizar extends Component {
     renderForm() {
         //JSX que renderizará o formulário
         return (
-            <form className="form">
+            <form className="form-atualizar">
                 <div className="row">
                     <label>E-mail do Solicitante</label>
                     <input 
