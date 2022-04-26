@@ -51,6 +51,7 @@ export default class Atualizar extends Component {
     }
 
     cancelar(e){
+        e.preventDefault()
         window.location.href = "/listagem"
     }
 
