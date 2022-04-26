@@ -17,8 +17,6 @@ const initialState = {
     }
 }
 
-let id_pedido
-
 export default class Atualizar extends Component {
 
     constructor(props) {
@@ -27,12 +25,12 @@ export default class Atualizar extends Component {
         this.state = {
             ...initialState
         }
+
+        this.state.pedido.id_pedido = props.params.id_pedido
     }
 
     componentDidMount(){
-        id_pedido = localStorage.getItem("id_pedido")
-
-        axios.get('/pedidos/pedido/' + id_pedido).then(response => {
+        axios.get('/pedidos/pedido/' + this.state.pedido.id_pedido).then(response => {
             this.setState({pedido: { ...response.data}})
             console.log(this.state)
 
@@ -64,7 +62,7 @@ export default class Atualizar extends Component {
 
         if(validacao.boolean) {
 
-            const url = "/pedidos/pedido/" + id_pedido
+            const url = "/pedidos/pedido/" + this.state.pedido.id_pedido
 
             axios.put(url, pedido).then(response => {
                 this.setTextoAviso("Pedido atualizado com sucesso!", validacao.cor)
@@ -118,7 +116,7 @@ export default class Atualizar extends Component {
             <form className="form-atualizar">
                 <div className="row">
                     <label>E-mail do Solicitante</label>
-                    <input 
+                    <input
                         type="email"
                         name="email_solicitante"
                         value={this.state.pedido.email_solicitante}

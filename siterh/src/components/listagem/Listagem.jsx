@@ -1,13 +1,12 @@
-import React, {Component, useState} from "react"
+import React, {Component} from "react"
 import './Listagem.css'
 import axios from "axios"
 import Main from "../template/Main"
-import dialog from "../template/Display"
+import Dialog from "../template/Dialog"
 
 const initialState = {
     list: [],
-    confirmando: false,
-    id_pedido: 0
+    dialog: null
 }
 
 export default class Listagem extends Component {
@@ -18,41 +17,43 @@ export default class Listagem extends Component {
         this.state = {
             ...initialState
         }
-
-        this.confirmaExclusao = this.confirmaExclusao.bind(this)
     }
 
     componentDidMount() {
         axios.get('/pedidos/pedido').then(resp => {
-            this.setState({ list: resp.data })
+            this.setState({list: resp.data})
         })
-        
     }
 
-    editarClickEvent(event){
-        let id_pedido = event.target.parentNode.parentNode.children[0].innerHTML
-        console.log(id_pedido) 
-        console.log(typeof(id_pedido)) //sempre armazenado como string. precisa parsear
- 
-        localStorage.setItem("id_pedido", id_pedido)
-        
-        window.location.href = "/atualizar"
-
+    openDialog(message, callback, config) {
+        this.setState({dialog: Dialog(message, callback, config)})
     }
 
-    deleteClickEvent(event) {
-        this.setState({confirmando: true})
-        this.setState({id_pedido: event.target.parentNode.parentNode.children[0].innerHTML})
+    closeDialog() {
+        this.setState({dialog: null})
     }
 
-    confirmaExclusao(escolha) {
-        if(escolha){
-            axios.delete('/pedidos/pedido/' + this.state.id_pedido).then(response => {
-                window.location.reload()
+    editarClickEvent(id_pedido) {
+        window.location.href = "/atualizar/" + id_pedido
+    }
+
+    deleteClickEvent(id_pedido) {
+        this.openDialog("Está certo da exclusão?", (confirmado) => {
+            this.closeDialog()
+            if (confirmado) {
+                this.confirmaExclusao(id_pedido)
+            }
+        }, {confirm: true})
+    }
+
+    confirmaExclusao(id_pedido) {
+        axios.delete('/pedidos/pedido/' + id_pedido)
+            .then(() => {
+                this.setState({list: this.state.list.filter(p => p.id_pedido !== id_pedido)})
             })
-        }
-
-        this.setState({confirmando: false})
+            .catch(() => {
+                this.openDialog("Erro ao excluir pedido!", () => this.closeDialog())
+            })
     }
 
     renderTable() {
@@ -79,7 +80,7 @@ export default class Listagem extends Component {
     }
 
     renderRows() {
-        return this.state.list.map( pedido => {
+        return this.state.list.map(pedido => {
             return (
                 <tr key={pedido.id_pedido} id="id_servidor">
                     <td>{pedido.id_pedido}</td>
@@ -91,8 +92,8 @@ export default class Listagem extends Component {
                     <td>{pedido.abono}</td>
                     <td>{pedido.decimo_terceiro}</td>
                     <td>
-                        <button onClick={e => this.editarClickEvent(e)}>Editar</button>
-                        <button onClick={e => this.deleteClickEvent(e)}>Excluir</button>
+                        <button onClick={() => this.editarClickEvent(pedido.id_pedido)}>Editar</button>
+                        <button onClick={() => this.deleteClickEvent(pedido.id_pedido)}>Excluir</button>
                     </td>
                 </tr>
             )
@@ -103,7 +104,7 @@ export default class Listagem extends Component {
         return (
             <Main title="Listagem dos Pedidos">
                 {this.renderTable()}
-                {this.state.confirmando && dialog("Está certo da exclusão?",this.confirmaExclusao)}
+                {this.state.dialog}
             </Main>
         )
     }
