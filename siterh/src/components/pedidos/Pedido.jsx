@@ -2,6 +2,8 @@ import React, {Component} from "react"
 import './Pedido.css'
 import axios from 'axios' //biblioteca http
 import Main from "../template/Main"
+import {Button, Form} from 'react-bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const baseUrl = '/pedidos'
 
@@ -45,6 +47,7 @@ export default class Pedido extends Component {
 
     clear() {
         this.setState({...initialState})
+        this.fetchServidores()
     }
 
     salvar(e) {
@@ -59,20 +62,12 @@ export default class Pedido extends Component {
             const method = pedido.id ? 'put' : 'post'
             const url = pedido.id ? `${baseUrl}/pedido/${pedido.id}` : `${baseUrl}/pedido`
     
-            //console.log("pedido: ")
-            //console.log(pedido)
-            //console.log("metodo: " + method)
-            //console.log("url: " + url)
-    
             axios[method](url, pedido).then(response => {
-                //console.log(response)
-                //console.log(response.status)
                 this.setTextoAviso("Pedido enviado com sucesso!", validacao.cor)
             })
         } else {
             this.setTextoAviso(validacao.texto, validacao.cor)
         }
-
     }
 
     sanearInput() {
@@ -123,128 +118,138 @@ export default class Pedido extends Component {
     renderForm() {
         //JSX que renderizará o formulário
         return (
-            <form className="form-pedido">
-                <div className="row">
-                    <label>E-mail do Solicitante</label>
-                    <input 
-                        type="email"
-                        name="email_solicitante"
-                        value={this.state.pedido.email_solicitante}
-                        onChange={e => this.setPedido({email_solicitante: e.target.value})}
-                        placeholder="Digite o e-mail">
-                    </input>
-                </div>
-                <div className="row">
-                    <label>Selecione o nome</label>
-                    <select name="id_servidor"
-                            value={this.state.pedido.id_servidor}
-                            onChange={e => this.setPedido({id_servidor: e.target.value})}>
-                        <option key="0" value="">{this.state.servidores ? "Selecione..." : "Carregando..."}</option>
-                        {
-                            this.state.servidores?.map(({id, nome}) => <option key={id} value={id}>{nome}</option>)
-                        }
-                    </select>
-                </div>
-                <div className="row">
-                    <label>Tipo de solicitação</label>
-                    <select name="tipo"
-                            value={this.state.pedido.tipo}
-                            onChange={e => this.setPedido({tipo: e.target.value})}>
-                        <option key="0" value="">Selecione...</option>
-                        <option value="f">Férias Regulamentar</option>
-                        <option value="fp">Férias Prêmio</option>
-                        <option value="fc">Férias Crédito</option>
-                        <option value="bh">Banco de Horas</option>
-                    </select>
-                </div>
-                <div className="row">
-                    <label>Data Inicial</label>
-                    <input type="date"
-                           name="data_inicial"
-                           value={this.state.pedido.data_inicial}
-                           onChange={e => this.setPedido({data_inicial: e.target.value})}>
-                    </input>
-                </div>
-                <div className="row">
-                    <label>Abono Pecuniário</label>
-                    <div className="radio_group">
-                        <label>
-                            <input type="radio"
-                                   name="abono"
-                                   checked={this.state.pedido.abono}
-                                   onChange={() => this.setPedido({abono: true})}
-                            /> Sim
-                        </label>
-                        <label>
-                            <input
+            <div>
+                <div className="div-root-pedido">
+                    
+                    <Form>
+                        <Form.Label>Email do solicitante</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Control                             
+                                type="email"
+                                name="email_solicitante"
+                                value={this.state.pedido.email_solicitante}
+                                onChange={e => this.setPedido({email_solicitante: e.target.value})}
+                                placeholder="solicitante@email.com"/>
+                        </Form.Group>
+
+                        <Form.Label>Selecione o nome</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Select 
+                                name="id_servidor"
+                                value={this.state.pedido.id_servidor}
+                                onChange={e => this.setPedido({id_servidor: e.target.value})}>
+                                <option key="0" value="">{this.state.servidores ? "Selecione..." : "Carregando..."}</option>
+                                {
+                                    this.state.servidores?.map(({id, nome}) => <option key={id} value={id}>{nome}</option>)
+                                }
+                            </Form.Select>
+                        </Form.Group>
+
+                        <Form.Label>Tipo de Solicitação</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Select name="tipo"
+                                    value={this.state.pedido.tipo}
+                                    onChange={e => this.setPedido({tipo: e.target.value})}>
+                                <option key="0" value="">Selecione...</option>
+                                <option value="f">Férias Regulamentar</option>
+                                <option value="fp">Férias Prêmio</option>
+                                <option value="fc">Férias Crédito</option>
+                                <option value="bh">Banco de Horas</option>
+                            </Form.Select>
+                        </Form.Group>
+
+                        <Form.Label>Data Inicial</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Control 
+                                type="date"
+                                name="data_inicial"
+                                value={this.state.pedido.data_inicial}
+                                onChange={e => this.setPedido({data_inicial: e.target.value})}>
+                            </Form.Control>
+                        </Form.Group>
+
+                        <Form.Label>Abono Pecuniário</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Check
+                                inline
+                                type="radio"
+                                name="abono"
+                                checked={this.state.pedido.abono}
+                                onChange={() => this.setPedido({abono: true})}
+                                label="Sim">
+                            </Form.Check>
+                            <Form.Check
+                                inline
                                 type="radio"
                                 name="abono"
                                 checked={!this.state.pedido.abono}
                                 onChange={() => this.setPedido({abono: false})}
-                            /> Não
-                        </label>
-                    </div>
-                </div>
-                <div className="row">
-                    <label>Décimo Terceiro</label>
-                    <div className="radio_group">
-                        <label>
-                            <input type="radio"
-                                   name="decimo_terceiro"
-                                   checked={this.state.pedido.decimo_terceiro}
-                                   onChange={() => this.setPedido({decimo_terceiro: true})}
-                            /> Sim
-                        </label>
-                        <label>
-                            <input
+                                label="Não">
+                            </Form.Check>
+                        </Form.Group>
+
+                        <Form.Label>50% do 13º salário</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Check
+                                inline
+                                type="radio"
+                                name="decimo_terceiro"
+                                checked={this.state.pedido.decimo_terceiro}
+                                onChange={() => this.setPedido({decimo_terceiro: true})}
+                                label="Sim">
+                            </Form.Check>
+                            <Form.Check
+                                inline
                                 type="radio"
                                 name="decimo_terceiro"
                                 checked={!this.state.pedido.decimo_terceiro}
                                 onChange={() => this.setPedido({decimo_terceiro: false})}
-                            /> Não
-                        </label>
-                    </div>
-                </div>
-                <div className="row">
-                    <label>Dias Gozo</label>
-                    <div className="radio_group">
-                        <label>
-                            <input type="radio"
-                                   name="dias_gozo"
-                                   checked={this.state.pedido.dias_gozo === 10}
-                                   onChange={() => this.setPedido({dias_gozo: 10})}
-                            /> 10
-                        </label>
-                        <label>
-                            <input type="radio"
-                                   name="dias_gozo"
-                                   checked={this.state.pedido.dias_gozo === 20}
-                                   onChange={() => this.setPedido({dias_gozo: 20})}
-                            /> 20
-                        </label>
-                        <label>
-                            <input type="radio"
-                                   name="dias_gozo"
-                                   checked={this.state.pedido.dias_gozo === 30}
-                                   onChange={() => this.setPedido({dias_gozo: 30})}
-                            /> 30
-                        </label>
-                    </div>
-                </div>
-                <hr/>
-                <div className="buttons">
-                    <button
-                        onClick={e => this.salvar(e)}>
-                        Salvar
-                    </button>
-                    <button
-                        onClick={e => this.clear(e)}>
-                        Limpar
-                    </button>
-                </div>
+                                label="Não">
+                            </Form.Check>
+                        </Form.Group>
 
-                <h4 id="textoResposta"></h4>
-            </form>
+                        <Form.Label>Dias Gozo</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Check
+                                inline
+                                type="radio"
+                                name="dias_gozo"
+                                checked={this.state.pedido.dias_gozo === 10}
+                                onChange={() => this.setPedido({dias_gozo: 10})}
+                                label="10">
+                            </Form.Check>
+                            <Form.Check
+                                inline
+                                type="radio"
+                                name="dias_gozo"
+                                checked={this.state.pedido.dias_gozo === 20}
+                                onChange={() => this.setPedido({dias_gozo: 20})}
+                                label="20">
+                            </Form.Check>
+                            <Form.Check
+                                inline
+                                type="radio"
+                                name="dias_gozo"
+                                checked={this.state.pedido.dias_gozo === 30}
+                                onChange={() => this.setPedido({dias_gozo: 30})}
+                                label="30">
+                            </Form.Check>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" >
+                            <Button variant="primary" onClick={e => this.salvar(e)}>
+                                Salvar
+                            </Button>{' '}
+                            <Button variant="secondary" onClick={e => this.clear(e)}>
+                                Limpar
+                            </Button>
+
+                        </Form.Group>
+
+                    </Form>
+                </div>
+                <h5 id="textoResposta"></h5>
+            </div>
         )
     }
 
