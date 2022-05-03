@@ -3,6 +3,8 @@ import './Listagem.css'
 import axios from "axios"
 import Main from "../template/Main"
 import Dialog from "../template/Dialog"
+import { Button } from "react-bootstrap"
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const initialState = {
     list: [],
@@ -56,6 +58,11 @@ export default class Listagem extends Component {
             })
     }
 
+    retornarFormatoCorretoDeData(date){
+        const array = date.split("-")
+        return array[2]+ '/' + array[1] + '/' + array[0]
+    }
+
     renderTable() {
         return (
             <table className="tabelaPedidos">
@@ -72,6 +79,7 @@ export default class Listagem extends Component {
                         <th>ações</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {this.renderRows()}
                 </tbody>
@@ -87,13 +95,13 @@ export default class Listagem extends Component {
                     <td>{pedido.id_servidor}</td>
                     <td>{pedido.email_solicitante}</td>
                     <td>{pedido.tipo}</td>
-                    <td>{pedido.data_inicial}</td>
-                    <td>{pedido.data_final}</td>
-                    <td>{pedido.abono}</td>
-                    <td>{pedido.decimo_terceiro}</td>
+                    <td>{this.retornarFormatoCorretoDeData(pedido.data_inicial)}</td>
+                    <td>{this.retornarFormatoCorretoDeData(pedido.data_final)}</td>
+                    <td>{pedido.abono?"SIM":"NÃO"}</td>
+                    <td>{pedido.decimo_terceiro?"SIM":"NÃO"}</td>
                     <td>
-                        <button onClick={() => this.editarClickEvent(pedido.id_pedido)}>Editar</button>
-                        <button onClick={() => this.deleteClickEvent(pedido.id_pedido)}>Excluir</button>
+                        <Button onClick={() => this.editarClickEvent(pedido.id_pedido)}>Editar</Button>
+                        <Button variant="secondary" onClick={() => this.deleteClickEvent(pedido.id_pedido)}>Excluir</Button>
                     </td>
                 </tr>
             )
