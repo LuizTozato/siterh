@@ -209,7 +209,7 @@ export default class Pedido extends Component {
                         </Form.Group>
 
                         <Form.Label>Dias Gozo</Form.Label>
-                        <Form.Group className="mb-3">
+                        <Form.Group className="mb-5">
                             <Form.Check
                                 inline
                                 type="radio"
