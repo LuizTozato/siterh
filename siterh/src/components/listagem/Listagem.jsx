@@ -68,15 +68,15 @@ export default class Listagem extends Component {
             <table className="tabelaPedidos">
                 <thead>
                     <tr>
-                        <th>id_pedido</th>
+                        <th>#</th>
                         <th>id_servidor</th>
-                        <th>email_solicitante</th>
-                        <th>tipo</th>
-                        <th>data_inicial</th>
-                        <th>data_final</th>
-                        <th>abono</th>
-                        <th>decimo_terceiro</th>
-                        <th>ações</th>
+                        <th>Email do Solicitante</th>
+                        <th>Tipo</th>
+                        <th>Data Inicial</th>
+                        <th>Data Final</th>
+                        <th>Abono</th>
+                        <th>13º</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
 

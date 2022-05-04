@@ -1,4 +1,6 @@
 import './Dialog.css'
+import { Button } from "react-bootstrap"
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 function Dialog(mensagem, callback, configuration = {}){
     const config = {confirm: false, ...configuration}
@@ -6,7 +8,7 @@ function Dialog(mensagem, callback, configuration = {}){
         <div className="gray-background">
 
             <div className="buttons-area">
-                <h3>{mensagem}</h3>
+                <h3 className='mb-3'>{mensagem}</h3>
                 <div>{renderButtons(callback, config.confirm)}</div>
             </div>
 
@@ -17,8 +19,8 @@ function Dialog(mensagem, callback, configuration = {}){
 function renderButtons(callback, confirm) {
     if (confirm) {
         return <>
-            <button onClick={() => callback(true)}>Sim</button>
-            <button onClick={() => callback(false)}>Não</button>
+            <Button variant='primary' onClick={() => callback(true)}>Sim</Button>{' '}
+            <Button variant='secondary' onClick={() => callback(false)}>Não</Button>
         </>
     } else {
         return <button onClick={callback}>OK</button>
