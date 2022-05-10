@@ -1,5 +1,6 @@
 import Pedido from "./controllers/pedidos/pedido.js"
 import Pedidos from "./controllers/pedidos/pedidos.js"
+import Credenciais from "./controllers/credenciais/token.js"
 
 function setup(app) {
     // Pedido
@@ -9,6 +10,7 @@ function setup(app) {
     app.put('/pedidos/pedido/:id', Pedido.updatePedido)
     app.get('/pedidos/servidores', Pedido.getServidores)
     app.delete('/pedidos/pedido/:id', Pedido.deletePedido)
+    app.put('/credenciais/token', Credenciais.createToken)
 }
 
 export default { setup }

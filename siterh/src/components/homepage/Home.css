@@ -1,22 +1,3 @@
-.form-home {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.div-root-home{
     width: 300px;
-}
-
-.row-home{
-    margin-bottom: 30px;
-}
-
-.form-home .row-home label {
-    display: block;
-    margin-bottom: 10px;
-}
-
-.button-entrar{
-    width: 210px;
-    height: 30px;
-    margin-top: 10px;
-    margin-bottom: 10px;
 }

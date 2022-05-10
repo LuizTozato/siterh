@@ -2,6 +2,7 @@ import db from "../../database/database.js"
 
 export default {
 
+    //LER TODOS os pedidos 
     getPedidos(req, res) {
 
         db.all(
@@ -11,7 +12,6 @@ export default {
                     return console.log(err.message);
                 } else {
                     res.send(result)
-                    //res.json({data: table , total: 0, pages: 0})
                 }
             }
         )

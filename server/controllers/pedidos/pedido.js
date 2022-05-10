@@ -2,6 +2,7 @@ import db from "../../database/database.js"
 
 export default {
 
+    //LER pedido específico
     getPedido(req, res) {
 
         db.get(`SELECT *
@@ -20,7 +21,7 @@ export default {
         )
     },
 
-    //Incluir novo
+    //CRIAR pedido
     addPedido(req, res) {
         if (setPedido(req.body))
             res.send("✅")
@@ -28,7 +29,7 @@ export default {
             res.status(400).send("🔥")
     },
 
-    //Alterar pedido existente
+    //ALTERAR pedido existente
     updatePedido(req, res) {
         if (updatePedido(req.body))
             res.send("✅")
@@ -36,15 +37,7 @@ export default {
             res.status(400).send("🔥")
     },
 
-    getServidores(req, res) {
-        const servidores = [
-            {id: 12345, nome: 'Luiz Felipe Neves Tozato'},
-            {id: 23456, nome: 'Samanta Cássia Vertuan'},
-            {id: 34567, nome: 'Franciele Baptista'}
-        ]
-        res.send(servidores)
-    },
-
+    //EXCLUIR pedido
     deletePedido(req, res) {
 
         db.run(`DELETE FROM tb_pedido
@@ -63,7 +56,18 @@ export default {
         )
 
         return true
+    },
+
+    //Servidores que podem ser escolhidos nos pedidos
+    getServidores(req, res) {
+        const servidores = [
+            {id: 12345, nome: 'Luiz Felipe Neves Tozato'},
+            {id: 23456, nome: 'Samanta Cássia Vertuan'},
+            {id: 34567, nome: 'Franciele Baptista'}
+        ]
+        res.send(servidores)
     }
+
 }
 
 /**
