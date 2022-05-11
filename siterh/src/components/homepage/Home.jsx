@@ -1,28 +1,22 @@
-import React, { Component , useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import './Home.css'
 import { AuthContext } from "../contexts/auth";
 import Main from "../template/Main";
-import axios from "axios";
 import {Button, Form} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 const Home = () => {
 
-    const [login, setLogin] = useState("")
+    const { authenticated, login } = useContext(AuthContext)
+
+    const [email, setEmail] = useState("")
     const [senha, setSenha] = useState("")
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
 
-        await axios.put('/credenciais/token', {login, senha} ).then(resp => {
-            const token = resp.data
-            if(!!token){
-                localStorage.setItem("token",token)
-            } else {
-                localStorage.clear()
-            }
-        })
+        login(email, senha)
 
     }
 
@@ -31,17 +25,18 @@ const Home = () => {
     function renderForm() {
         return(
             <div className="div-root-home">
-                <h6 className="mb-4">Faça o login para começar!</h6>
+                <h6 className="mb-4">Faça o email para começar!</h6>
+                <p>{String(authenticated)}</p>
 
                 <Form className="ps-3 form">
-                    <Form.Label>Login</Form.Label>
+                    <Form.Label>email</Form.Label>
                     <Form.Group className="mb-3">
                         <Form.Control
-                            type="text"
-                            name="login"
-                            value={login}
-                            onChange={e => setLogin(e.target.value)}
-                            placeholder="Digite o seu login"/>
+                            type="email"
+                            name="email"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            placeholder="Digite o seu email"/>
                     </Form.Group>
 
                     <Form.Label>Senha</Form.Label>
