@@ -1,4 +1,4 @@
-import React, {useState, createContext} from "react"
+import React, {useState, createContext, useEffect} from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios";
 
@@ -8,7 +8,21 @@ export const AuthContext = createContext() //disponível em todo o sistema
 export const AuthProvider = ({children}) => {
     
     const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        //useEffect é assíncrono, por isso, preciso fazer essa verificação antes de renderizar a página
+        const recoveredToken = localStorage.getItem('token')
+
+        if(recoveredToken){
+            setUser(true)
+        }
+
+        setLoading(false)
+
+    }, []) //esse [] significa que vai rodar toda vez que atualizar a página. Se fosse [user], seria executado toda vez que o user fosse atualizado, por exemplo.
+
 
     const login = (email, senha) => {
 
@@ -23,7 +37,8 @@ export const AuthProvider = ({children}) => {
                 setUser({email})
                 navigate("/listagem")
             } else {
-                localStorage.clear()
+                localStorage.removeItem('token')
+                setUser(null)
             }
         })
 
@@ -33,6 +48,7 @@ export const AuthProvider = ({children}) => {
 
         console.log("logout")
         setUser(null)
+        localStorage.removeItem('token')
         navigate("/")
     }    
     
@@ -40,6 +56,7 @@ export const AuthProvider = ({children}) => {
         <AuthContext.Provider value={{
             authenticated: !!user,
             user,
+            loading,
             login,
             logout
         }}>
