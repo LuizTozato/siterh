@@ -1,69 +1,91 @@
-import React, {Component} from "react"
+import React, {useState, useEffect} from "react"
 import './Listagem.css'
 import axios from "axios"
 import Main from "../template/Main"
 import Dialog from "../template/Dialog"
-import { Button } from "react-bootstrap"
+import { Button, Form } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-const initialState = {
-    list: [],
-    dialog: null
-}
+const Listagem = () => {
 
-export default class Listagem extends Component {
+    const [list, setList] = useState([])
+    const [dialog, setDialog] = useState(null)
+    const [busca, setBusca] = useState('')
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            ...initialState
-        }
-    }
-
-    componentDidMount() {
+    //Functions ======
+    useEffect(() => { //similar ao componentDidMount
         axios.get('/pedidos/pedido').then(resp => {
-            this.setState({list: resp.data})
+            setList(resp.data)
         })
+    })
+    
+    function openDialog(message, callback, config) {
+        setDialog(Dialog(message, callback, config))
     }
 
-    openDialog(message, callback, config) {
-        this.setState({dialog: Dialog(message, callback, config)})
+    function closeDialog() {
+        setDialog(null)
     }
 
-    closeDialog() {
-        this.setState({dialog: null})
-    }
-
-    editarClickEvent(id_pedido) {
+    function editarClickEvent(id_pedido) {
         window.location.href = "/atualizar/" + id_pedido
     }
 
-    deleteClickEvent(id_pedido) {
-        this.openDialog("Está certo da exclusão?", (confirmado) => {
-            this.closeDialog()
+    function deleteClickEvent(id_pedido) {
+        openDialog("Está certo da exclusão?", (confirmado) => {
+            closeDialog()
             if (confirmado) {
-                this.confirmaExclusao(id_pedido)
+                confirmaExclusao(id_pedido)
             }
         }, {confirm: true})
     }
 
-    confirmaExclusao(id_pedido) {
+    function confirmaExclusao(id_pedido) {
         axios.delete('/pedidos/pedido/' + id_pedido)
             .then(() => {
-                this.setState({list: this.state.list.filter(p => p.id_pedido !== id_pedido)})
+                setList( list.filter(p => p.id_pedido !== id_pedido) )
             })
             .catch(() => {
-                this.openDialog("Erro ao excluir pedido!", () => this.closeDialog())
+                openDialog("Erro ao excluir pedido!", () => this.closeDialog())
             })
     }
 
-    retornarFormatoCorretoDeData(date){
+    function retornarFormatoCorretoDeData(date){
         const array = date.split("-")
         return array[2]+ '/' + array[1] + '/' + array[0]
     }
 
-    renderTable() {
+    function handlerBusca(e){
+        
+        const textoBusca = e.target.value
+        console.log(textoBusca)
+        setBusca(textoBusca)
+        setList( list.filter((pedido) => 
+                pedido.id_servidor === 23456 //valor mockado para teste
+            )
+        )
+
+    }
+
+
+    //===== JSX =================
+    function renderFilterInput(){
+        return (
+            <div className="div-root-filter">
+                <Form className="ps-1 formListagem">
+                    <h5 className="text-filter">Filtro:</h5>
+                    <Form.Control
+                        type="text"
+                        value={busca}
+                        onChange={e => handlerBusca(e)}
+                        placeholder="Digite o id do servidor..."/>
+                </Form>
+                <hr></hr>
+            </div>
+        )
+    }
+    
+    function renderTable() {
         return (
             <table className="tabelaPedidos">
                 <thead>
@@ -81,40 +103,43 @@ export default class Listagem extends Component {
                 </thead>
 
                 <tbody>
-                    {this.renderRows()}
+                    {renderRows()}
                 </tbody>
             </table>
         )
     }
 
-    renderRows() {
-        return this.state.list.map(pedido => {
+    function renderRows() {
+        return list.map(pedido => {
             return (
                 <tr key={pedido.id_pedido} id="id_servidor">
                     <td>{pedido.id_pedido}</td>
                     <td>{pedido.id_servidor}</td>
                     <td>{pedido.email_solicitante}</td>
                     <td>{pedido.tipo}</td>
-                    <td>{this.retornarFormatoCorretoDeData(pedido.data_inicial)}</td>
-                    <td>{this.retornarFormatoCorretoDeData(pedido.data_final)}</td>
+                    <td>{retornarFormatoCorretoDeData(pedido.data_inicial)}</td>
+                    <td>{retornarFormatoCorretoDeData(pedido.data_final)}</td>
                     <td>{pedido.abono?"SIM":"NÃO"}</td>
                     <td>{pedido.decimo_terceiro?"SIM":"NÃO"}</td>
                     <td>
-                        <Button onClick={() => this.editarClickEvent(pedido.id_pedido)}>Editar</Button>
-                        <Button variant="secondary" onClick={() => this.deleteClickEvent(pedido.id_pedido)}>Excluir</Button>
+                        <Button onClick={() => editarClickEvent(pedido.id_pedido)}>Editar</Button>
+                        <Button variant="secondary" onClick={() => deleteClickEvent(pedido.id_pedido)}>Excluir</Button>
                     </td>
                 </tr>
             )
         })
     }
 
-    render() {
-        return (
-            <Main title="Listagem dos Pedidos">
-                {this.renderTable()}
-                {this.state.dialog}
-            </Main>
-        )
-    }
+    
+    return (
+        <Main title="Listagem dos Pedidos">
+            {renderFilterInput()}
+            {renderTable()}
+            {dialog}
+        </Main>
+    )
+    
 
 }
+
+export default Listagem

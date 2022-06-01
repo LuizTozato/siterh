@@ -40,3 +40,21 @@
 .tabelaPedidos tbody tr td button {
     margin: 5px;
 }
+
+.div-root-filter{
+    width: 600px;
+}
+
+.formListagem {
+    display: flex;
+    align-items: center;
+}
+
+.formListagem *{
+    margin: 10px;
+}
+
+.text-filter{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.5em;
+}
