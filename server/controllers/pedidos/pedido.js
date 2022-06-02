@@ -16,6 +16,7 @@ export default {
                     return console.log(err.message)
                 } else {
                     res.send(result)
+                    console.log("Single order found.")
                 }
             }
         )

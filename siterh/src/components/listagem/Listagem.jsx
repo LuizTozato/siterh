@@ -12,12 +12,16 @@ const Listagem = () => {
     const [dialog, setDialog] = useState(null)
     const [busca, setBusca] = useState('')
 
+    const listFiltrada = list.filter((pedido) => 
+        String(pedido.id_servidor).includes(busca)
+    )
+
     //Functions ======
     useEffect(() => { //similar ao componentDidMount
         axios.get('/pedidos/pedido').then(resp => {
             setList(resp.data)
         })
-    })
+    },[]) // []-> executar 1 única vez
     
     function openDialog(message, callback, config) {
         setDialog(Dialog(message, callback, config))
@@ -55,18 +59,6 @@ const Listagem = () => {
         return array[2]+ '/' + array[1] + '/' + array[0]
     }
 
-    function handlerBusca(e){
-        
-        const textoBusca = e.target.value
-        console.log(textoBusca)
-        setBusca(textoBusca)
-        setList( list.filter((pedido) => 
-                pedido.id_servidor === 23456 //valor mockado para teste
-            )
-        )
-
-    }
-
 
     //===== JSX =================
     function renderFilterInput(){
@@ -77,7 +69,7 @@ const Listagem = () => {
                     <Form.Control
                         type="text"
                         value={busca}
-                        onChange={e => handlerBusca(e)}
+                        onChange={e => setBusca(e.target.value)}
                         placeholder="Digite o id do servidor..."/>
                 </Form>
                 <hr></hr>
@@ -110,7 +102,7 @@ const Listagem = () => {
     }
 
     function renderRows() {
-        return list.map(pedido => {
+        return listFiltrada.map(pedido => {
             return (
                 <tr key={pedido.id_pedido} id="id_servidor">
                     <td>{pedido.id_pedido}</td>
