@@ -11,10 +11,14 @@ const Listagem = () => {
     const [list, setList] = useState([])
     const [dialog, setDialog] = useState(null)
     const [busca, setBusca] = useState('')
+    const [primeiraLinha, setPrimeiraLinha] = useState(0)
+    const [ultimaLinha, setUltimaLinha] = useState(5)
 
     const listFiltrada = list.filter((pedido) => 
         String(pedido.id_servidor).includes(busca)
     )
+
+    const listaFiltradaPaginada = listFiltrada.slice(primeiraLinha,ultimaLinha)
 
     //Functions ======
     useEffect(() => { //similar ao componentDidMount
@@ -59,6 +63,25 @@ const Listagem = () => {
         return array[2]+ '/' + array[1] + '/' + array[0]
     }
 
+    function handleFilter(e){
+        setBusca(e.target.value)
+        setPrimeiraLinha(0)
+        setUltimaLinha(5)        
+    }
+
+    function handlePaginationAnterior(){
+        if(primeiraLinha !== 0){
+            setPrimeiraLinha(primeiraLinha - 5)
+            setUltimaLinha(ultimaLinha - 5)
+        }
+    }
+
+    function handlePaginationProxima(){
+        if(primeiraLinha + 5 < listFiltrada.length){
+            setPrimeiraLinha(primeiraLinha + 5)
+            setUltimaLinha(ultimaLinha + 5)
+        }
+    }
 
     //===== JSX =================
     function renderFilterInput(){
@@ -69,10 +92,11 @@ const Listagem = () => {
                     <Form.Control
                         type="text"
                         value={busca}
-                        onChange={e => setBusca(e.target.value)}
+                        onChange={e => handleFilter(e)}
                         placeholder="Digite o id do servidor..."/>
                 </Form>
                 <hr></hr>
+                <h6 className="mb-0 text-filter">Total de itens: {listFiltrada.length}. Exibindo de: {primeiraLinha+1} até {ultimaLinha}</h6>
             </div>
         )
     }
@@ -102,7 +126,7 @@ const Listagem = () => {
     }
 
     function renderRows() {
-        return listFiltrada.map(pedido => {
+        return listaFiltradaPaginada.map(pedido => {
             return (
                 <tr key={pedido.id_pedido} id="id_servidor">
                     <td>{pedido.id_pedido}</td>
@@ -122,11 +146,22 @@ const Listagem = () => {
         })
     }
 
+    function renderPagination(){
+        return(
+            <div className="paginacao">
+                <h5 className="mb-0 text-filter">Paginação:</h5>
+                <Button variant="light" onClick={handlePaginationAnterior}>Anterior</Button>
+                <Button variant="dark" onClick={handlePaginationProxima}>Próxima</Button>
+            </div>
+
+        )
+    }
     
     return (
         <Main title="Listagem dos Pedidos">
             {renderFilterInput()}
             {renderTable()}
+            {renderPagination()}
             {dialog}
         </Main>
     )
