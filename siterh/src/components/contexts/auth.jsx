@@ -24,22 +24,25 @@ export const AuthProvider = ({children}) => {
     }, []) //esse [] significa que vai rodar toda vez que atualizar a página. Se fosse [user], seria executado toda vez que o user fosse atualizado, por exemplo.
 
 
-    const login = (email, senha) => {
+    const login = function(email, senha) {
 
-        console.log({email,senha})
-
-        axios.put('/credenciais/token', {email, senha} ).then(resp => {
+        return new Promise(function(myResolve, myReject){
             
-            const token = resp.data
+            axios.put('/credenciais/token', {email, senha} ).then(resp => {
+                
+                const token = resp.data
 
-            if(!!token){
-                localStorage.setItem("token",token)
-                setUser({email})
-                navigate("/listagem")
-            } else {
-                localStorage.removeItem('token')
-                setUser(null)
-            }
+                if(!!token){
+                    localStorage.setItem("token",token)
+                    setUser({email})
+                    navigate("/listagem")
+                    myResolve("OK")
+                } else {
+                    localStorage.removeItem('token')
+                    setUser(null)
+                    myReject("Deu ruim")
+                }
+            })
         })
 
     }

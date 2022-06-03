@@ -17,7 +17,36 @@ const Home = () => {
         e.preventDefault()
 
         login(email, senha)
+    }
 
+    function keyPress(tecla){
+
+        console.log(tecla)
+
+        if(tecla == "Enter"){
+
+            login(email, senha).then(
+
+                function(value){
+                    console.log("value(sucess): " + value)
+                    setTextoAviso("Autenticação concluída!","green")
+                },
+
+                function(error){
+                    console.log("error: " + error)
+                    setTextoAviso("E-mail ou Senha incorretos...","red")
+                }
+            )
+        
+        } else {
+            setTextoAviso("")
+        }
+    }
+
+    function setTextoAviso(texto, color = "black") {
+        const textoHtml = document.getElementById("textoAlerta")
+        textoHtml.innerHTML = texto
+        textoHtml.style.color = color
     }
 
 
@@ -26,15 +55,16 @@ const Home = () => {
         return(
             <div className="div-root-home">
                 <h6 className="mb-4">Faça o email para começar!</h6>
-                <p>{String(authenticated)}</p>
+                <p>Autenticador: {String(authenticated)}</p>
 
                 <Form className="ps-3 form">
-                    <Form.Label>email</Form.Label>
+                    <Form.Label>E-mail</Form.Label>
                     <Form.Group className="mb-3">
                         <Form.Control
                             type="email"
                             name="email"
                             value={email}
+                            onKeyDown={(eventoClique) => keyPress(eventoClique.key) }
                             onChange={e => setEmail(e.target.value)}
                             placeholder="Digite o seu email"/>
                     </Form.Group>
@@ -45,6 +75,7 @@ const Home = () => {
                             type="password"
                             name="senha"
                             value={senha}
+                            onKeyDown={(eventoClique) => keyPress(eventoClique.key) }
                             onChange={e => setSenha(e.target.value)}
                             placeholder="Digite a sua senha."/>
                     </Form.Group>
@@ -55,6 +86,8 @@ const Home = () => {
                                 Entrar
                             </Button>
                     </Form.Group>
+
+                    <p id="textoAlerta"></p>
 
                 </Form>
             </div>
