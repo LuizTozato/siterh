@@ -1,10 +1,12 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom"
 import './Home.css'
 import { AuthContext } from "../contexts/auth";
 import Main from "../template/Main";
 import {Button, Form} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+const md5 = require('md5')
 
 const Home = () => {
 
@@ -12,24 +14,26 @@ const Home = () => {
 
     const [email, setEmail] = useState("")
     const [senha, setSenha] = useState("")
+    const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        login(email, senha)
+        login(md5(email), md5(senha))
     }
 
     function keyPress(tecla){
 
-        console.log(tecla)
+        if(tecla === "Enter"){
 
-        if(tecla == "Enter"){
-
-            login(email, senha).then(
+            login(md5(email), md5(senha)).then(
 
                 function(value){
                     console.log("value(sucess): " + value)
                     setTextoAviso("Autenticação concluída!","green")
+                    //setTimeout(()=>{console.log("DELAY 1S")},1000)
+                    navigate("/listagem")
+                    
                 },
 
                 function(error){

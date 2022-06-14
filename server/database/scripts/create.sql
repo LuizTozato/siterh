@@ -19,3 +19,9 @@ CREATE TABLE tb_pedido
     decimo_terceiro   BOOLEAN NOT NULL,
     FOREIGN KEY (id_servidor) REFERENCES tb_servidor (id_servidor)
 );
+
+CREATE TABLE tb_credenciais
+(
+    login             TEXT NOT NULL,
+    senha             TEXT NOT NULL
+);

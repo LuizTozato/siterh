@@ -9,3 +9,6 @@ INSERT INTO tb_pedido(id_servidor, email_solicitante, tipo, data_inicial, data_f
 VALUES (12345, 'teste@teste.com', 'fp', '2022-03-01', '2022-03-10', false, false),
        (23456, 'teste@teste.com', 'fc', '2022-03-05', '2022-03-15', false, false),
        (34567, 'teste@teste.com', 'bh', '2022-03-10', '2022-03-20', false, false)
+
+INSERT INTO tb_credenciais(login, senha)
+VALUES ('6f69cff44b1e5f40b1af3b3267517632', 'eb0a191797624dd3a48fa681d3061212');
