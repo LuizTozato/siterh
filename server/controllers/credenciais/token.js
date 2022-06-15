@@ -1,17 +1,17 @@
 import db from "../../database/database.js"
 import jwt from 'jsonwebtoken'
+import md5 from 'md5'
 
 export default {
 
     createToken(req, res) {
 
         console.log("\nIniciando requisição de token...")
-        console.log(req.body)
 
         const SECRET = 'Pakerwreah'
 
-        const loginReq = req.body.email
-        const senhaReq = req.body.senha
+        const emailReq = md5(req.body.email)
+        const senhaReq = md5(req.body.senha)
 
         let token = null
 
@@ -20,7 +20,7 @@ export default {
                 FROM tb_credenciais
                 WHERE login = ? AND senha = ?`,
             [
-                loginReq, senhaReq
+                emailReq, senhaReq
             ],
             function (err, result) {
                 if (err) {
@@ -28,7 +28,7 @@ export default {
                 } else {
                     if(!!result){
                         console.log("Usuário encontrado!")
-                        token = jwt.sign({login: loginReq}, SECRET, {expiresIn: 1800})
+                        token = jwt.sign({login: emailReq}, SECRET, {expiresIn: 600}) //válido por 10min
                         res.send(token)
 
                     } else {
@@ -38,6 +38,25 @@ export default {
                 }
             }
         )
-    
+    },
+
+    validateToken(req, res){
+        
+        const recoveredToken = req.body.recoveredToken
+
+        const SECRET = 'Pakerwreah'
+
+        let validador = null
+
+        try{
+            jwt.verify(recoveredToken, SECRET)
+            validador = true
+        } catch (err){
+            validador = false
+        }
+
+        res.send(validador)
+            
     }
+
 }

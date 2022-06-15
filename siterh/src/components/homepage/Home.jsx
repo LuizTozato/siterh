@@ -6,7 +6,6 @@ import Main from "../template/Main";
 import {Button, Form} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-const md5 = require('md5')
 
 const Home = () => {
 
@@ -19,32 +18,38 @@ const Home = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        login(md5(email), md5(senha))
+        logar()
     }
 
     function keyPress(tecla){
 
         if(tecla === "Enter"){
 
-            login(md5(email), md5(senha)).then(
-
-                function(value){
-                    console.log("value(sucess): " + value)
-                    setTextoAviso("Autenticação concluída!","green")
-                    //setTimeout(()=>{console.log("DELAY 1S")},1000)
-                    navigate("/listagem")
-                    
-                },
-
-                function(error){
-                    console.log("error: " + error)
-                    setTextoAviso("E-mail ou Senha incorretos...","red")
-                }
-            )
+            logar()
         
         } else {
             setTextoAviso("")
         }
+    }
+
+    function logar(){
+
+        login(email, senha).then(
+
+            function(value){
+                console.log("value(sucess): " + value)
+                setTextoAviso("Autenticação concluída!","green")
+                //setTimeout(()=>{console.log("DELAY 1S")},1000)
+                navigate("/listagem")
+                
+            },
+
+            function(error){
+                console.log("error: " + error)
+                setTextoAviso("E-mail ou Senha incorretos...","red")
+            }
+        )
+
     }
 
     function setTextoAviso(texto, color = "black") {

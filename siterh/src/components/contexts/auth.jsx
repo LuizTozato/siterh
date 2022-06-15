@@ -1,7 +1,6 @@
 import React, {useState, createContext, useEffect} from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios";
-import Validacao from './validarToken.js'
 
 export const AuthContext = createContext() //disponível em todo o sistema
 
@@ -16,11 +15,15 @@ export const AuthProvider = ({children}) => {
         //useEffect é assíncrono, por isso, preciso fazer essa verificação antes de renderizar a página
         const recoveredToken = localStorage.getItem('token')
 
-        const validacao = Validacao.validarToken(recoveredToken)
+        axios.put('/credenciais/validateToken', {recoveredToken} ).then( validacao => {
 
-        if(validacao){
-            setUser(true)
-        }
+            if(validacao.data){
+                setUser(true)
+            } else {
+                setUser(false)
+            }
+        })
+
 
         setLoading(false)
 
@@ -29,7 +32,7 @@ export const AuthProvider = ({children}) => {
 
     const login = function(email, senha) {
 
-        return new Promise(function(myResolve, myReject){
+        return new Promise( function(myResolve, myReject){
             
             axios.put('/credenciais/token', {email, senha} ).then(resp => {
                 

@@ -3,7 +3,7 @@ import Pedidos from "./controllers/pedidos/pedidos.js"
 import Credenciais from "./controllers/credenciais/token.js"
 
 function setup(app) {
-    // Pedido
+
     app.get('/pedidos/pedido/:id', Pedido.getPedido)
     app.get('/pedidos/pedido', Pedidos.getPedidos)
     app.post('/pedidos/pedido', Pedido.addPedido)
@@ -11,6 +11,8 @@ function setup(app) {
     app.get('/pedidos/servidores', Pedido.getServidores)
     app.delete('/pedidos/pedido/:id', Pedido.deletePedido)
     app.put('/credenciais/token', Credenciais.createToken)
+    app.put('/credenciais/validateToken', Credenciais.validateToken)
+
 }
 
 export default { setup }
