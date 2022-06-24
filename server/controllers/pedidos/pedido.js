@@ -61,12 +61,17 @@ export default {
 
     //Servidores que podem ser escolhidos nos pedidos
     getServidores(req, res) {
-        const servidores = [
-            {id: 12345, nome: 'Luiz Felipe Neves Tozato'},
-            {id: 23456, nome: 'Samanta Cássia Vertuan'},
-            {id: 34567, nome: 'Franciele Baptista'}
-        ]
-        res.send(servidores)
+        
+        db.all(
+            `SELECT * FROM tb_servidor ORDER BY id_servidor`,
+            function (err, result) {
+                if (err) {
+                    return console.log(err.message);
+                } else {
+                    res.send(result)
+                }   
+            }   
+        )
     }
 
 }

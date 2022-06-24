@@ -5,6 +5,8 @@ import Main from "../template/Main"
 import Dialog from "../template/Dialog"
 import { Button, Form } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css'
+import {debounce} from 'loadsh'
+
 
 const Listagem = () => {
 
@@ -63,10 +65,14 @@ const Listagem = () => {
         return array[2]+ '/' + array[1] + '/' + array[0]
     }
 
+    //const debouncedSearch = debounce( (criterio) => {setBusca(criterio)}, 300)
+
     function handleFilter(e){
+        
+        //debouncedSearch(e.target.value)
         setBusca(e.target.value)
         setPrimeiraLinha(0)
-        setUltimaLinha(5)        
+        setUltimaLinha(5)
     }
 
     function handlePaginationAnterior(){
@@ -92,7 +98,7 @@ const Listagem = () => {
                     <Form.Control
                         type="text"
                         value={busca}
-                        onChange={e => handleFilter(e)}
+                        onChange={handleFilter}
                         placeholder="Digite o id do servidor..."/>
                 </Form>
                 <hr></hr>
@@ -107,7 +113,7 @@ const Listagem = () => {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>id_servidor</th>
+                        <th>Nome</th>
                         <th>Email do Solicitante</th>
                         <th>Tipo</th>
                         <th>Data Inicial</th>
@@ -126,24 +132,24 @@ const Listagem = () => {
     }
 
     function renderRows() {
-        return listaFiltradaPaginada.map(pedido => {
-            return (
-                <tr key={pedido.id_pedido} id="id_servidor">
-                    <td>{pedido.id_pedido}</td>
-                    <td>{pedido.id_servidor}</td>
-                    <td>{pedido.email_solicitante}</td>
-                    <td>{pedido.tipo}</td>
-                    <td>{retornarFormatoCorretoDeData(pedido.data_inicial)}</td>
-                    <td>{retornarFormatoCorretoDeData(pedido.data_final)}</td>
-                    <td>{pedido.abono?"SIM":"NÃO"}</td>
-                    <td>{pedido.decimo_terceiro?"SIM":"NÃO"}</td>
-                    <td>
-                        <Button onClick={() => editarClickEvent(pedido.id_pedido)}>Editar</Button>
-                        <Button variant="secondary" onClick={() => deleteClickEvent(pedido.id_pedido)}>Excluir</Button>
-                    </td>
-                </tr>
-            )
-        })
+        return listaFiltradaPaginada.map(pedido => 
+            
+            <tr key={pedido.id_pedido} id="id_servidor">
+                <td>{pedido.id_pedido}</td>
+                <td>{pedido.nome}</td>
+                <td>{pedido.email_solicitante}</td>
+                <td>{pedido.tipo}</td>
+                <td>{retornarFormatoCorretoDeData(pedido.data_inicial)}</td>
+                <td>{retornarFormatoCorretoDeData(pedido.data_final)}</td>
+                <td>{pedido.abono?"SIM":"NÃO"}</td>
+                <td>{pedido.decimo_terceiro?"SIM":"NÃO"}</td>
+                <td>
+                    <Button onClick={() => editarClickEvent(pedido.id_pedido)}>Editar</Button>
+                    <Button variant="secondary" onClick={() => deleteClickEvent(pedido.id_pedido)}>Excluir</Button>
+                </td>
+            </tr>
+            
+        )
     }
 
     function renderPagination(){
@@ -153,7 +159,6 @@ const Listagem = () => {
                 <Button variant="light" onClick={handlePaginationAnterior}>Anterior</Button>
                 <Button variant="dark" onClick={handlePaginationProxima}>Próxima</Button>
             </div>
-
         )
     }
     
