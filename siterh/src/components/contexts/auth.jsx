@@ -22,10 +22,7 @@ export const AuthProvider = ({children}) => {
             } else {
                 setUser(false)
             }
-        })
-
-
-        setLoading(false)
+        }).finally(() => setLoading(false))
 
     }, []) //esse [] significa que vai rodar toda vez que atualizar a página. Se fosse [user], seria executado toda vez que o user fosse atualizado, por exemplo.
 
