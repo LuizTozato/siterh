@@ -11,21 +11,15 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 const Listagem = () => {
 
     const [list, setList] = useState([])
+    const [listaFiltradaPaginada, setListaFiltradaPaginada] = useState([])
     const [dialog, setDialog] = useState(null)
-    const [busca, setBusca] = useState('')
-    const [primeiraLinha, setPrimeiraLinha] = useState(0)
-    const [ultimaLinha, setUltimaLinha] = useState(5)
 
-    const listFiltrada = list.filter((pedido) => 
-        String(pedido.id_servidor).includes(busca)
-    )
-
-    const listaFiltradaPaginada = listFiltrada.slice(primeiraLinha,ultimaLinha)
 
     //Functions ======
     useEffect(() => { //similar ao componentDidMount
-        axios.get('/pedidos/pedido').then(resp => {
+        axios.get('/pedidos/pedidos').then(resp => {
             setList(resp.data)
+            setListaFiltradaPaginada(resp.data)
         })
     },[]) // []-> executar 1 única vez
     
@@ -69,24 +63,17 @@ const Listagem = () => {
 
     function handleFilter(e){
         
-        //debouncedSearch(e.target.value)
-        setBusca(e.target.value)
-        setPrimeiraLinha(0)
-        setUltimaLinha(5)
-    }
-
-    function handlePaginationAnterior(){
-        if(primeiraLinha !== 0){
-            setPrimeiraLinha(primeiraLinha - 5)
-            setUltimaLinha(ultimaLinha - 5)
+        const busca = e.target.value
+        console.log([])
+        
+        if(busca){
+            axios.get('/pedidos/pedidosFiltrados/'+busca).then(resp => {
+                setListaFiltradaPaginada(resp.data)
+            })
+        } else {
+            setListaFiltradaPaginada(list)
         }
-    }
 
-    function handlePaginationProxima(){
-        if(primeiraLinha + 5 < listFiltrada.length){
-            setPrimeiraLinha(primeiraLinha + 5)
-            setUltimaLinha(ultimaLinha + 5)
-        }
     }
 
     //===== JSX =================
@@ -97,12 +84,11 @@ const Listagem = () => {
                     <h5 className="text-filter">Filtro:</h5>
                     <Form.Control
                         type="text"
-                        value={busca}
                         onChange={handleFilter}
                         placeholder="Digite o id do servidor..."/>
                 </Form>
                 <hr></hr>
-                <h6 className="mb-0 text-filter">Total de itens: {listFiltrada.length}. Exibindo de: {primeiraLinha+1} até {listFiltrada.length<ultimaLinha?listFiltrada.length:ultimaLinha}</h6>
+                <h6 className="mb-0 text-filter">Total de itens: {}. Exibindo de: {} até {}</h6>
             </div>
         )
     }
@@ -156,8 +142,8 @@ const Listagem = () => {
         return(
             <div className="paginacao">
                 <h5 className="mb-0 text-filter">Paginação:</h5>
-                <Button variant="light" onClick={handlePaginationAnterior}>Anterior</Button>
-                <Button variant="dark" onClick={handlePaginationProxima}>Próxima</Button>
+                <Button variant="light">Anterior</Button>
+                <Button variant="dark">Próxima</Button>
             </div>
         )
     }
