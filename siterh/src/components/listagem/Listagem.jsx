@@ -5,7 +5,7 @@ import Main from "../template/Main"
 import Dialog from "../template/Dialog"
 import { Button, Form } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {debounce} from 'loadsh'
+//import {debounce} from 'loadsh'
 
 
 const Listagem = () => {
@@ -102,7 +102,7 @@ const Listagem = () => {
                         placeholder="Digite o id do servidor..."/>
                 </Form>
                 <hr></hr>
-                <h6 className="mb-0 text-filter">Total de itens: {listFiltrada.length}. Exibindo de: {primeiraLinha+1} até {ultimaLinha}</h6>
+                <h6 className="mb-0 text-filter">Total de itens: {listFiltrada.length}. Exibindo de: {primeiraLinha+1} até {listFiltrada.length<ultimaLinha?listFiltrada.length:ultimaLinha}</h6>
             </div>
         )
     }
@@ -133,7 +133,7 @@ const Listagem = () => {
 
     function renderRows() {
         return listaFiltradaPaginada.map(pedido => 
-            
+
             <tr key={pedido.id_pedido} id="id_servidor">
                 <td>{pedido.id_pedido}</td>
                 <td>{pedido.nome}</td>
@@ -148,7 +148,7 @@ const Listagem = () => {
                     <Button variant="secondary" onClick={() => deleteClickEvent(pedido.id_pedido)}>Excluir</Button>
                 </td>
             </tr>
-            
+        
         )
     }
 

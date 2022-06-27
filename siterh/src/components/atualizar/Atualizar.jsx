@@ -15,7 +15,8 @@ const initialState = {
         data_final: '',
         dias_gozo: 0,
         abono: false,
-        decimo_terceiro: false
+        decimo_terceiro: false,
+        nome: ''
     }
 }
 
@@ -23,22 +24,23 @@ export default class Atualizar extends Component {
 
     constructor(props) {
         super(props);
-
+        
         this.state = {
             ...initialState
         }
-
+        
         this.state.pedido.id_pedido = props.params.id_pedido
     }
 
     componentDidMount(){
+        
         axios.get('/pedidos/pedido/' + this.state.pedido.id_pedido).then(response => {
             this.setState({pedido: { ...response.data}})
-            console.log(this.state)
 
             const diasGozo = this.getDaysBetween(this.state.pedido.data_inicial, this.state.pedido.data_final)
             this.setPedido({dias_gozo: diasGozo})
         })
+        
     }
 
     getDaysBetween(startDate, finalDate) {
@@ -240,7 +242,7 @@ export default class Atualizar extends Component {
 
                     </Form>
                 </div>
-                <h4 id="textoResposta"></h4>
+                <h5 id="textoResposta">(...)</h5>
             </div>
         )
     }

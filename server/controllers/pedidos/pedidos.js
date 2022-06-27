@@ -32,8 +32,6 @@ export default {
                                     pedido.nome = servidor.nome
                                 })
 
-                                console.log(pedidos)
-
                                 res.send(pedidos)
                             }   
                         }   
