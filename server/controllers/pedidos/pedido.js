@@ -15,7 +15,7 @@ export default {
                 if (err) {
                     return console.log(err.message)
                 } else {
-                    console.log("Single order found.")
+                    result? console.log("Single order found.") :  console.log("Busca retornou mas falhou")
                     res.send(result)
                 }
             }

@@ -4,45 +4,30 @@ import db from "../../database/database.js"
 export default {
 
     //LER TODOS os pedidos 
-    async getPedidos(req, res) {
+    getPedidos(req, res) {
 
         // 1ª requisição =====
         db.all(
-            `SELECT * FROM tb_servidor ORDER BY id_servidor`,
+            `SELECT p.abono,
+                    p.data_final,
+                    p.data_inicial,
+                    p.decimo_terceiro,
+                    p.email_solicitante,
+                    p.id_pedido,
+                    p.id_servidor,
+                    p.tipo,
+                    s.nome  
+            FROM tb_pedido p
+            JOIN tb_servidor s USING(id_servidor)
+            ORDER BY id_servidor`,
+
             function (err, result) {
                 if (err) {
-                    return console.log(err.message)
+                    console.log(err.message)
                 } else {
-                    
-                    const servidores = result
-
-                    // 2ª requisição =====
-                    db.all(
-                        `SELECT * FROM tb_pedido ORDER BY id_pedido`,
-                        function (err, result) {
-                            if (err) {
-                                return console.log(err.message)
-                            } else {
-                                
-                                let pedidos = result
-                                
-                                pedidos.forEach(pedido => {
-                                    
-                                    const servidor = servidores.find(servidor => servidor.id_servidor === pedido.id_servidor)
-                                    pedido.nome = servidor.nome
-                                })
-
-                                res.send(pedidos)
-                            }   
-                        }   
-                    )
-
-                    // FIM 2ª requisição =====
-
+                    res.send(result)
                 }   
             }   
         )
-
-        // FIM 1ª requisição =====
     }
 }
