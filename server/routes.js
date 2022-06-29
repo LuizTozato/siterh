@@ -4,8 +4,8 @@ import Credenciais from "./controllers/credenciais/token.js"
 
 function setup(app) {
 
-    app.get('/pedidos/pedidos',           Pedidos.getPedidos)
-    app.get('/pedidos/pedidosFiltrados/:busca',     Pedidos.getFilteredPagedPedidos)
+    app.get('/pedidos/pedidos/:offset',           Pedidos.getPedidos)
+    app.get('/pedidos/pedidosFiltrados/:offset/:busca',     Pedidos.getFilteredPagedPedidos)
 
     app.get('/pedidos/pedido/:id',        Pedido.getPedido)
     app.post('/pedidos/pedido',           Pedido.addPedido)

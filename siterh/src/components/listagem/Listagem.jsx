@@ -13,16 +13,22 @@ const Listagem = () => {
     const [list, setList] = useState([])
     const [listaFiltradaPaginada, setListaFiltradaPaginada] = useState([])
     const [dialog, setDialog] = useState(null)
-
+    const [offset, setOffset] = useState(0)
+    const [totalPedidos, setTotalPedidos] = useState(0)
 
     //Functions ======
-    useEffect(() => { //similar ao componentDidMount
-        axios.get('/pedidos/pedidos').then(resp => {
-            setList(resp.data)
-            setListaFiltradaPaginada(resp.data)
-        })
-    },[]) // []-> executar 1 única vez
+    useEffect(() => { 
+        buscarPedidos(offset)
+    },[offset]) // []-> executar 1 única vez
     
+    function buscarPedidos(offset){
+        axios.get('/pedidos/pedidos/' + offset ).then(resp => {
+            setList(resp.data.result)
+            setListaFiltradaPaginada(resp.data.result)
+            setTotalPedidos(resp.data.total)
+        })
+    }
+
     function openDialog(message, callback, config) {
         setDialog(Dialog(message, callback, config))
     }
@@ -64,16 +70,28 @@ const Listagem = () => {
     function handleFilter(e){
         
         const busca = e.target.value
-        console.log([])
         
         if(busca){
-            axios.get('/pedidos/pedidosFiltrados/'+busca).then(resp => {
-                setListaFiltradaPaginada(resp.data)
+            axios.get('/pedidos/pedidosFiltrados/' + offset + '/' + busca).then(resp => {
+                setListaFiltradaPaginada(resp.data.result)
+                setTotalPedidos(resp.data.total)
             })
         } else {
             setListaFiltradaPaginada(list)
         }
+    }
 
+    function proximaPagina(){
+
+        if(offset + 5 < totalPedidos){
+            setOffset( offset + 5 )
+        }
+    }
+
+    function paginaAnterior(){
+        if( offset - 5 >= 0){
+            setOffset( offset - 5 )
+        }
     }
 
     //===== JSX =================
@@ -88,7 +106,7 @@ const Listagem = () => {
                         placeholder="Digite o id do servidor..."/>
                 </Form>
                 <hr></hr>
-                <h6 className="mb-0 text-filter">Total de itens: {}. Exibindo de: {} até {}</h6>
+                <h6 className="mb-0 text-filter">Total de itens: {totalPedidos}. Exibindo de: {offset+1} até {offset+5>totalPedidos?totalPedidos:offset+5}</h6>
             </div>
         )
     }
@@ -142,8 +160,8 @@ const Listagem = () => {
         return(
             <div className="paginacao">
                 <h5 className="mb-0 text-filter">Paginação:</h5>
-                <Button variant="light">Anterior</Button>
-                <Button variant="dark">Próxima</Button>
+                <Button variant="light" onClick={paginaAnterior}>Anterior</Button>
+                <Button variant="dark" onClick={proximaPagina}>Próxima</Button>
             </div>
         )
     }
