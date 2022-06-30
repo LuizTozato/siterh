@@ -11,22 +11,28 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 const Listagem = () => {
 
     const [list, setList] = useState([])
-    const [listaFiltradaPaginada, setListaFiltradaPaginada] = useState([])
     const [dialog, setDialog] = useState(null)
+    const [busca, setBusca] = useState('')
     const [offset, setOffset] = useState(0)
     const [totalPedidos, setTotalPedidos] = useState(0)
 
     //Functions ======
     useEffect(() => { 
-        buscarPedidos(offset)
-    },[offset]) // []-> executar 1 única vez
+            buscarPedidos(busca, offset)
+    },[busca, offset]) // []-> executar 1 única vez
     
-    function buscarPedidos(offset){
-        axios.get('/pedidos/pedidos/' + offset ).then(resp => {
+    function buscarPedidos(busca = 'ignore', offset = 0 ){
+        
+        if(busca === ''){
+            busca = 'ignore'
+        }
+        console.log('/pedidos/pedidos/' + offset + '/' + busca )
+
+        axios.get('/pedidos/pedidos/' + offset + '/' + busca ).then(resp => {
             setList(resp.data.result)
-            setListaFiltradaPaginada(resp.data.result)
             setTotalPedidos(resp.data.total)
         })
+
     }
 
     function openDialog(message, callback, config) {
@@ -65,31 +71,20 @@ const Listagem = () => {
         return array[2]+ '/' + array[1] + '/' + array[0]
     }
 
-    //const debouncedSearch = debounce( (criterio) => {setBusca(criterio)}, 300)
-
     function handleFilter(e){
-        
-        const busca = e.target.value
-        
-        if(busca){
-            axios.get('/pedidos/pedidosFiltrados/' + offset + '/' + busca).then(resp => {
-                setListaFiltradaPaginada(resp.data.result)
-                setTotalPedidos(resp.data.total)
-            })
-        } else {
-            setListaFiltradaPaginada(list)
-        }
+
+        setOffset(0)
+        setBusca(e.target.value)
     }
 
     function proximaPagina(){
-
-        if(offset + 5 < totalPedidos){
+        if( offset + 5 < totalPedidos){
             setOffset( offset + 5 )
         }
     }
 
     function paginaAnterior(){
-        if( offset - 5 >= 0){
+        if( offset - 5 >= 0 ){
             setOffset( offset - 5 )
         }
     }
@@ -101,9 +96,11 @@ const Listagem = () => {
                 <Form className="ps-1 formListagem">
                     <h5 className="text-filter">Filtro:</h5>
                     <Form.Control
+                        id="inputBusca"
                         type="text"
+                        value={busca}
                         onChange={handleFilter}
-                        placeholder="Digite o id do servidor..."/>
+                        placeholder="Digite o nome ou e-mail do servidor..."/>
                 </Form>
                 <hr></hr>
                 <h6 className="mb-0 text-filter">Total de itens: {totalPedidos}. Exibindo de: {offset+1} até {offset+5>totalPedidos?totalPedidos:offset+5}</h6>
@@ -136,7 +133,7 @@ const Listagem = () => {
     }
 
     function renderRows() {
-        return listaFiltradaPaginada.map(pedido => 
+        return list.map(pedido => 
 
             <tr key={pedido.id_pedido} id="id_servidor">
                 <td>{pedido.id_pedido}</td>
