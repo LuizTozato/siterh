@@ -5,7 +5,7 @@ import Main from "../template/Main"
 import Dialog from "../template/Dialog"
 import { Button, Form } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css'
-//import {debounce} from 'loadsh'
+import _ from 'loadsh'
 
 
 const Listagem = () => {
@@ -18,7 +18,7 @@ const Listagem = () => {
 
     //Functions ======
     useEffect(() => { 
-            buscarPedidos(busca, offset)
+        buscarPedidos(busca, offset)
     },[busca, offset]) // []-> executar 1 única vez
     
     function buscarPedidos(busca = 'ignore', offset = 0 ){
@@ -77,6 +77,8 @@ const Listagem = () => {
         setBusca(e.target.value)
     }
 
+    const debounced_handleFilter = _.debounce(handleFilter, 500)
+
     function proximaPagina(){
         if( offset + 5 < totalPedidos){
             setOffset( offset + 5 )
@@ -98,8 +100,7 @@ const Listagem = () => {
                     <Form.Control
                         id="inputBusca"
                         type="text"
-                        value={busca}
-                        onChange={handleFilter}
+                        onChange={debounced_handleFilter}
                         placeholder="Digite o nome ou e-mail do servidor..."/>
                 </Form>
                 <hr></hr>
