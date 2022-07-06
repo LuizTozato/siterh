@@ -54,15 +54,16 @@ export default class Pedido extends Component {
         e.preventDefault()
 
         const pedido = this.state.pedido
+        console.log(pedido)
 
         const validacao = this.sanearInput()
 
         if(validacao.boolean) {
 
-            const method = pedido.id ? 'put' : 'post'
-            const url = pedido.id ? `${baseUrl}/pedido/${pedido.id}` : `${baseUrl}/pedido`
+            const url = `${baseUrl}/pedido`
     
-            axios[method](url, pedido).then(response => {
+            axios.post(url, pedido).then(response => {
+                console.log(response)
                 this.setTextoAviso("Pedido enviado com sucesso!", validacao.cor)
             })
         } else {
@@ -99,8 +100,6 @@ export default class Pedido extends Component {
             cor = "green"
         }
 
-        console.log("Boolean saneamento: " + boolean)
-        console.log("Texto saneamento: " + texto)
         return {boolean, texto, cor}
     }
 
@@ -137,7 +136,7 @@ export default class Pedido extends Component {
                             <Form.Select 
                                 name="id_servidor"
                                 value={this.state.pedido.id_servidor}
-                                onChange={e => this.setPedido({id_servidor: e.target.value})}>
+                                onChange={e => this.setPedido({id_servidor: (this.state.servidores.find(obj => obj.nome === e.target.value)).id_servidor })}>
                                 <option key="0" value="">{this.state.servidores ? "Selecione..." : "Carregando..."}</option>
                                 {
                                     this.state.servidores?.map(({id, nome}) => <option key={id} value={id}>{nome}</option>)

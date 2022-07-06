@@ -6,10 +6,10 @@ function setup(app) {
 
     app.get('/pedidos/pedidos/:offset/:busca', Pedidos.getPedidos)
 
+    app.get('/pedidos/servidores',        Pedido.getServidores)
     app.get('/pedidos/pedido/:id',        Pedido.getPedido)
     app.post('/pedidos/pedido',           Pedido.addPedido)
     app.put('/pedidos/pedido/:id',        Pedido.updatePedido)
-    app.get('/pedidos/servidores',        Pedido.getServidores)
     app.delete('/pedidos/pedido/:id',     Pedido.deletePedido)
 
     app.put('/credenciais/token',         Credenciais.createToken)
