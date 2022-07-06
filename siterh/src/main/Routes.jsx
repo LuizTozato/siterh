@@ -1,11 +1,12 @@
 import React, { useContext } from "react"
 import { Routes, Route, useParams, Navigate } from "react-router-dom"
+import { AuthContext, AuthProvider } from "../components/contexts/auth"
 
 import Home from '../components/homepage/Home'
 import Pedido from "../components/pedidos/Pedido"
 import Listagem from "../components/listagem/Listagem"
 import Atualizar from "../components/atualizar/Atualizar"
-import { AuthContext, AuthProvider } from "../components/contexts/auth"
+import Charts from "../components/charts/Charts"
 
 
 export default () => {
@@ -36,6 +37,7 @@ export default () => {
                     <Route exact path='/listagem' element={<Private><Listagem/></Private>}/>
                     <Route exact path='/pedidos' element={<Private><Pedido/></Private>}/>
                     <Route exact path='/atualizar/:id_pedido' element={<Private><WithParams Component={Atualizar}/></Private>}/>
+                    <Route exact path='/charts' element={<Private><Charts/></Private>}/>
             </Routes>
         </AuthProvider>
     )

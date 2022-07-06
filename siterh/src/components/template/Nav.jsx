@@ -14,6 +14,9 @@ export default () => (
             <Link to='/pedidos' className="link-always-on">
                 Agendar
             </Link>
+            <Link to='/charts' className="link-always-on">
+                Estatísticas
+            </Link>
         </nav>
     </aside>
 )
