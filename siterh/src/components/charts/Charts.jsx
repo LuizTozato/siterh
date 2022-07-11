@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from "react"
 import axios from "axios"
 import Main from "../template/Main"
+import { Form } from "react-bootstrap"
 import {Chart} from "react-google-charts"
+import _ from 'loadsh'
 
 const Charts = () => {
 
@@ -64,18 +66,48 @@ const Charts = () => {
 
     }
 
+    function handleFilter(e){
+        setBusca(e.target.value)
+    }
+
+    const debounced_handleFilter = _.debounce(handleFilter, 500)
+
+    //===== JSX =================
+    function renderChart(){
+        return (
+            <div className="root-chart">
+                <Chart 
+                    chartType="Bar" 
+                    data={data} 
+                    width={"100%"} 
+                    height={"400px"}
+                    options={options}>
+                </Chart>
+                <div>Total de Pedidos: {totalPedidos}</div>
+            </div>
+        )
+    }
+
+    function renderFilterInput(){
+        return (
+            <div className="div-root-filter">
+                <Form className="ps-1 formListagem">
+                    <h5 className="text-filter">Filtro:</h5>
+                    <Form.Control
+                        id="inputBusca"
+                        type="text"
+                        onChange={debounced_handleFilter}
+                        placeholder="Digite o nome ou e-mail do servidor..."/>
+                </Form>
+                <hr></hr>
+            </div>
+        )
+    }
+
     return(
         <Main title="Dados e estatísticas">
-
-            <Chart 
-                chartType="Bar" 
-                data={data} 
-                width={"100%"} 
-                height={"400px"}
-                options={options}>
-            </Chart>
-            <div>Total de Pedidos: {totalPedidos}</div>
-
+            {renderFilterInput()}
+            {renderChart()}
         </Main>
 
     )
