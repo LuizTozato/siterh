@@ -2,6 +2,7 @@ header.header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-width: 500px;
     
     overflow: hidden;
     white-space: nowrap;
